@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/lacie/workspaces/ate_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/lacie/workspaces/ate_ws/src/junbot_adaptive_planner/costmap_objects_layer/costmap_objects_layer/include/**",
+        "/home/lacie/workspaces/ate_ws/src/junbot_adaptive_planner/junbot_adaptive/include/**",
+        "/home/lacie/workspaces/ate_ws/src/ate_junbot_gui/junbot_gui/include/**",
+        "/home/lacie/workspaces/ate_ws/src/junbot_adaptive_planner/object_mapping/include/**",
+        "/home/lacie/workspaces/ate_ws/src/vision_msgs/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
