@@ -117,12 +117,13 @@ int main(int argc, char **argv) {
             std::vector<geometry_msgs::Point> waypointError;
             custom_msgs::Form temp;
             for (int k = 0; k < path.poses.size(); ++k) {
-                distance = calculateDistance(coner[j][0],coner[j][1],path.poses[k].pose.position.x, path.poses[k].pose.position.y);                    if (distance <= 0.3) {
-                geometry_msgs::Point p;
-                p.x = path.poses[k].pose.position.x;
-                p.y = path.poses[k].pose.position.y;
-                p.z = path.poses[k].pose.position.z;
-                waypointError.push_back(p);
+                distance = calculateDistance(coner[j][0],coner[j][1],path.poses[k].pose.position.x, path.poses[k].pose.position.y);                    
+                if (distance <= 0.3) {
+                    geometry_msgs::Point p;
+                    p.x = path.poses[k].pose.position.x;
+                    p.y = path.poses[k].pose.position.y;
+                    p.z = path.poses[k].pose.position.z;
+                    waypointError.push_back(p);
                 }
             }
             if (waypointError.size()>1)

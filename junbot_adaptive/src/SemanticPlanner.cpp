@@ -181,3 +181,16 @@ void SemanticPlanner::run() {
         loop_rate.sleep();
     }
 }
+
+static custom_msgs::Obstacles parseMapConfig(const std::string &configPath)
+{
+
+}
+    
+static std::vector<WayPoint> parseMissionConfig(const std::string &configPath)
+{
+
+}
+
+
+

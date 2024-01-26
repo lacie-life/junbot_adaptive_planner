@@ -1,0 +1,17 @@
+<launch>
+
+    <arg name="model" default="mecanum" doc="model type [burger, waffle, waffle_pi]"/>
+    <arg name="config_paths" default="$(find junbot_adaptive)/config" doc="config paths [$(find junbot_adaptive)/config]"/>
+
+    <node name="add_object_layer" pkg="junbot_adaptive" type="objectLayer" output="screen" >
+        <param name="object_layer" value="$(arg config_paths)/object_layer.yaml"/>
+    </node>
+
+    <node name="adptive_controller" pkg="junbot_adaptive" type="adaptiveControl" output="screen" >
+        <param name="object_layer" value="$(arg config_paths)/adaptive_controller.yaml"/>
+    </node>
+
+</launch>
+
+
+

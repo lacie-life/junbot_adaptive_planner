@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(junbot_adaptive)
 
-option(TEST_BUILD "Build test" OFF)
+option(TEST_BUILD "Build test" ON)
 
 ## Find catkin and any catkin packages
 find_package(catkin REQUIRED COMPONENTS
@@ -87,10 +87,10 @@ if (TEST_BUILD)
             )
 endif (TEST_BUILD)
 
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-# )
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+)
 
-# install(DIRECTORY bag config launch rviz
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
+install(DIRECTORY bag config launch rviz
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
