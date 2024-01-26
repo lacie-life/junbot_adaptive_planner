@@ -19,6 +19,7 @@
 #include <vision_msgs/Detection3DArray.h>
 #include <vision_msgs/Detection3D.h>
 
+
 struct RobotPose {
     double x;
     double y;
@@ -67,11 +68,5 @@ private:
 
     std::mutex mutex;
 };
-
-// Return object list
-static custom_msgs::Obstacles parseMapConfig(const std::string &configPath);
-
-// Return mission list
-static std::vector<WayPoint> parseMissionConfig(const std::string &configPath);
 
 #endif //JUNBOT_ADAPTIVE_SEMANTICPLANNER_H

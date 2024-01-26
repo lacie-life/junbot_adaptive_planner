@@ -1,7 +1,48 @@
 #include "ros/ros.h"
 #include <std_msgs/String.h>
 #include <custom_msgs/Obstacles.h>
-#include "include/SemanticPlanner.h"
+
+#include "SemanticPlanner.h"
+
+#include "jsoncpp/json/json.h"
+#include <fstream>
+
+// Return object list
+custom_msgs::Obstacles parseMapConfig(const std::string &configPath)
+{
+    custom_msgs::Obstacles objs;
+
+    std::ifstream ifs(configPath + "/map.json");
+    Json::Reader reader;
+    Json::Value root;
+    if (!reader.parse(ifs, root)) {
+        std::cout << "Failed to parse " << configPath << std::endl;
+        return objs;
+    }
+
+    // TODO: parse json file
+
+    return objs;
+}
+
+// Return mission list
+std::vector<WayPoint> parseMissionConfig(const std::string &configPath)
+{
+    std::vector<WayPoint> mission;
+
+    std::ifstream ifs(configPath + "/mission.json");
+    Json::Reader reader;
+    Json::Value root;
+    if (!reader.parse(ifs, root)) {
+        std::cout << "Failed to parse " << configPath << std::endl;
+        return mission;
+    }
+
+    // TODO: parse json file
+
+    return mission;
+}
+
 
 int main(int argc, char **argv)
 {
@@ -15,8 +56,8 @@ int main(int argc, char **argv)
     std::string object_layer_config;
     std::string mission_config;
     n.getParam("object_layer", param_file_path);
-    object_layer_config = param_file_path["map"];
-    mission_config = param_file_path["mission"];
+    object_layer_config = param_file_path['map'];
+    mission_config = param_file_path['mission'];
 
     ROS_INFO("param_file_path_ is %s", param_file_path.c_str());
     ROS_INFO("object_layer_config is %s", object_layer_config.c_str());
@@ -65,3 +106,6 @@ int main(int argc, char **argv)
     }
     return 0;
 }
+
+
+
