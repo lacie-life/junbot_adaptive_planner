@@ -6,7 +6,7 @@
 
 SemanticPlanner::SemanticPlanner(ros::NodeHandle &nh)
 {
-    obstaclePub = nh.advertise<custom_msgs::Obstacles>("/object_costmap_layer/obsctacles", 1);
+    obstaclePub = nh.advertise<custom_msgs::Obstacles>("/object_costmap_layer/obstacles", 1);
 
     obstacleSub = nh.subscribe("obstacles", 1, &SemanticPlanner::ObstacleCallback, this);
     grid_map_sub = nh.subscribe("grid_map", 1, &SemanticPlanner::gridMapCallback, this);

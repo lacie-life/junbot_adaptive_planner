@@ -49,11 +49,11 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "add_object_layer");
     // Create a handle to this process node
     ros::NodeHandle n;
-    // Publisher is chatter_pub publishing to topic /object_costmap_layer/obsctacles with queue_size 1000
-    ros::Publisher chatter_pub = n.advertise<custom_msgs::Obstacles>("/object_costmap_layer/obsctacles_temp", 1000);
+    // Publisher is chatter_pub publishing to topic /object_costmap_layer/obstacles with queue_size 1000
+    ros::Publisher chatter_pub = n.advertise<custom_msgs::Obstacles>("/object_costmap_layer/obstacles", 1000);
     std::string object_layer_config;
     
-    n.getParam("/add_object_layer/map", object_layer_config);
+    n.getParam("/add_object_layer/map_path", object_layer_config);
     ROS_INFO("object_layer_config is %s", object_layer_config.c_str());
 
     custom_msgs::Obstacles objs = parseMapConfig(object_layer_config);

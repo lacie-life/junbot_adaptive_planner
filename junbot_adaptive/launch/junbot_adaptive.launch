@@ -7,13 +7,13 @@
         <param name="map_path" value="$(arg config_paths)/map.json"/>
     </node>
 
-    <node name="adptive_controller" pkg="junbot_adaptive" type="adaptiveControl" output="screen" >
+    <!-- <node name="adptive_controller" pkg="junbot_adaptive" type="adaptiveControl" output="screen" >
         <param name="control_param" value="$(arg config_paths)/adaptive_controller.yaml"/>
     </node>
 
     <node name="mission_control" pkg="junbot_adaptive" type="mission_control" output="screen" >
         <param name="mission_path" value="$(arg config_paths)/mission.json"/>
-    </node>
+    </node> -->
 
 </launch>
 
