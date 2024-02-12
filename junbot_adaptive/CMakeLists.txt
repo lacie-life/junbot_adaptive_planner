@@ -40,9 +40,9 @@ add_dependencies(junbot_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXP
 # Test
 ################################################################################
 
-add_executable(cancel_mission test/cancel_mission.cpp)
-target_link_libraries(cancel_mission ${catkin_LIBRARIES})
-add_dependencies(cancel_mission ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_executable(mission_control test/mission_control.cpp src/SemanticPlanner.cpp)
+target_link_libraries(mission_control ${catkin_LIBRARIES} -ljsoncpp)
+add_dependencies(mission_control ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 add_executable(add_layer test/add_layer.cpp src/SemanticPlanner.cpp)
 target_link_libraries(add_layer ${catkin_LIBRARIES} -ljsoncpp)
@@ -72,6 +72,10 @@ install(TARGETS junbot_planner
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         )
 
+install(TARGETS mission_control
+        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+        )
+
 install(TARGETS add_layer
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         )
@@ -87,7 +91,6 @@ install(TARGETS objectLayer
 install(TARGETS subscribeTraj
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         )
-
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}

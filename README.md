@@ -3,7 +3,6 @@ Adaptive planner for Junbot based on object mapping
 
 ## Addition dependencies for ros_motion_planning
 
-
 - OSQP
     ```bash
     git clone -b release-0.6.3 --recursive https://github.com/oxfordcontrol/osqp
@@ -33,6 +32,12 @@ Adaptive planner for Junbot based on object mapping
     ros-noetic-move-base \
     ros-no
     ```
+    
+## Node list
+
+- Add object layer
+- Mission control
+- Adaptive planner
 
 
 

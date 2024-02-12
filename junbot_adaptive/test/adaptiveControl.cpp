@@ -66,8 +66,8 @@ int main(int argc, char **argv) {
     ros::NodeHandle n;
     subPlan = n.subscribe("/move_base/DWAPlannerROS/global_plan", 10000, globalPlanCallback);
     
-    subObj = n.subscribe("/object_costmap_layer/obsctacles_temp", 10000, objectCallback);
-    pubObj = n.advertise<custom_msgs::Obstacles>("/object_costmap_layer/obsctacles", 1000);
+    subObj = n.subscribe("/object_costmap_layer/obstacles_temp", 10000, objectCallback);
+    pubObj = n.advertise<custom_msgs::Obstacles>("/object_costmap_layer/obstacles", 1000);
 
     
     //coner simulation
