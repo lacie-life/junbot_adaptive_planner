@@ -22,6 +22,7 @@ def rep_field(px, py, sx, sy, mx, my):
             thr = 5
             d = ((x - px) ** 2) / sx ** 2 + ((y - py) ** 2) / sy ** 2
             d = math.sqrt(d)
+            # Drawing the repulsive field
             if (d < 1 and d != 0):
                 res[x, y] = min((1 - 1 / d) ** 2, thr)
                 res[x, y] = res[x, y] * 0.001

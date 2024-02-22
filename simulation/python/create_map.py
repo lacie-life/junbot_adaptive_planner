@@ -7,11 +7,18 @@ from field import guassian
 def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
     n = len(X)
     Map = np.zeros((mx, my, 3))
+
+    # Create the map with repulsive and attractive fields in channel 1
     for i in range(n):
         if (TYPE[i] == 0):
-            Map[:, :, 2] += rep_field(X[i], Y[i], SIGMA_X[i], SIGMA_Y[i], mx, my)
+            Map[:, :, 1] += rep_field(X[i], Y[i], SIGMA_X[i], SIGMA_Y[i], mx, my)
         elif (TYPE[i] == 2):
-            Map[:, :, 2] += att_field(X[i], Y[i], mx, my);
+            Map[:, :, 1] += att_field(X[i], Y[i], mx, my)
+    
+    # Color encode the map for visualization
+    Map[:, :, 2] = Map[:, :, 1] * 5
+    Map[:, :, 0] = Map[:, :, 1] * 6
+    
     return Map
 
 

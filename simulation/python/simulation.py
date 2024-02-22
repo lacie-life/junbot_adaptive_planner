@@ -20,6 +20,8 @@ Sheet-2 :
 
 
 def simulation(filename):
+
+    # Load the data from the excel file
     alpha = 90000
     book = open_workbook(filename)
     sheet1 = book.sheet_by_index(0)
@@ -31,12 +33,30 @@ def simulation(filename):
     TYPE = np.asarray(sheet1.col_values(4, start_rowx=0, end_rowx=None))
     map_sx = int(sheet2.cell_value(0, 0))
     map_sy = int(sheet2.cell_value(0, 1))
-    # cv2.namedWindow('path', cv2.WINDOW_NORMAL)
+    grid_sz = 20
+
+    # Create the map
+    cv2.namedWindow('path', cv2.WINDOW_NORMAL)
     Map = create_map(map_sx, map_sy, X, Y, SIGMA_X, SIGMA_Y, TYPE)
     img = np.zeros((map_sx, map_sy, 3), np.uint8)
     img = Map * 15
-    # cv2.imshow('path', img)
+
+    # Draw grid
+    img_gird_bg = np.zeros((map_sx, map_sy, 3), np.uint8)
+    # Draw horizontal lines
+    for i in range(0, img_gird_bg.shape[0], grid_sz):
+        cv2.line(img_gird_bg, (0, i), (img_gird_bg.shape[1], i), (50, 50, 100), 1)
+
+    # Draw vertical lines
+    for i in range(0, img_gird_bg.shape[1], grid_sz):
+        cv2.line(img_gird_bg, (i, 0), (i, img_gird_bg.shape[0]), (50, 50, 100), 1)
+
+    # Combine the map and grid
+    img = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.01, 0)
+    cv2.imshow('path', img)
     # cv2.waitKey(0)
+
+    # Find the path
     for i in range(len(X)):
         if (TYPE[i] == 2):
             Dx = X[i]
@@ -44,15 +64,16 @@ def simulation(filename):
         if (TYPE[i] == 1):
             x = x1 = X[i]
             y = y1 = Y[i]
+    
     img = draw(img, Dx, Dy, 1)
     count = 0
-    # cv2.imshow('path', img)
+    cv2.imshow('path', img)
     points = []
     points.append([x, y])
 
     while (abs(x - Dx) > 5 or abs(y - Dy) > 5):
         img = draw(img, x, y, 0)
-        # cv2.imshow('path', img)
+        cv2.imshow('path', img)
         cv2.waitKey(10)
         # checking if bot is stationary for long
         if (abs(x - x1) < 1 and abs(y - y1) < 1):
@@ -65,8 +86,8 @@ def simulation(filename):
             for i in range(-10, 11):
                 for j in range(-10, 11):
                     if (i != 0 or j != 0):
-                        if (Map[int(x + i), int(y + j), 2] - Map[int(x), int(y), 2] < m):
-                            m = Map[int(x + i), int(y + j), 2] - Map[int(x), int(y), 2]
+                        if (Map[int(x + i), int(y + j), 1] - Map[int(x), int(y), 1] < m):
+                            m = Map[int(x + i), int(y + j), 1] - Map[int(x), int(y), 1]
                             temp0 = x - 1.5 * alpha * m
                             temp1 = y - 1.5 * alpha * m
             x = (temp0)
@@ -77,8 +98,8 @@ def simulation(filename):
         # gradient descent
         x1 = x
         y1 = y
-        temp0 = x - alpha * (Map[int(x) + 3, int(y), 2] - Map[int(x), int(y), 2])
-        temp1 = y - alpha * (Map[int(x), int(y) + 3, 2] - Map[int(x), int(y), 2])
+        temp0 = x - alpha * (Map[int(x) + 3, int(y), 1] - Map[int(x), int(y), 1])
+        temp1 = y - alpha * (Map[int(x), int(y) + 3, 1] - Map[int(x), int(y), 1])
         x = (temp0)
         y = (temp1)
         points.append([x, y])

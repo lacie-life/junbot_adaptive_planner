@@ -5,8 +5,8 @@ import cv2
 def filter_waypoint(A, Map, mx, my):
     m = len(A)
     img = np.zeros((mx, my, 3), np.uint8)
-    # cv2.namedWindow('filtered path', cv2.WINDOW_NORMAL)
-    # cv2.imshow('filtered path', img)
+    cv2.namedWindow('filtered path', cv2.WINDOW_NORMAL)
+    cv2.imshow('filtered path', img)
     while (True):
         count = 0
         for i in range(0, m - 2):
@@ -28,8 +28,8 @@ def filter_waypoint(A, Map, mx, my):
         if (count < m / 10):
             break
     cv2.imwrite('filtered_path.jpg', img)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     return
 
 
