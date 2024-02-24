@@ -39,7 +39,7 @@ def simulation(filename):
     cv2.namedWindow('path', cv2.WINDOW_NORMAL)
     Map = create_map(map_sx, map_sy, X, Y, SIGMA_X, SIGMA_Y, TYPE)
     img = np.zeros((map_sx, map_sy, 3), np.uint8)
-    img = Map * 15
+    img = Map * 8000
 
     # Draw grid
     img_gird_bg = np.zeros((map_sx, map_sy, 3), np.uint8)
@@ -52,8 +52,10 @@ def simulation(filename):
     #     cv2.line(img_gird_bg, (i, 0), (i, img_gird_bg.shape[0]), (255, 255, 255), 1)
 
     # Combine the map and grid
-    img = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.01, 0)
-    cv2.imshow('path', img)
+    # img = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.01, 0)
+    img = cv2.cvtColor(img.astype('uint8'), cv2.COLOR_BGR2GRAY)
+    heatmap = cv2.applyColorMap(img, cv2.COLORMAP_HSV)
+    cv2.imshow('path', heatmap)
     # cv2.waitKey(0)
 
     # Find the path
@@ -65,15 +67,15 @@ def simulation(filename):
             x = x1 = X[i]
             y = y1 = Y[i]
     
-    img = draw(img, Dx, Dy, 1)
+    heatmap = draw(heatmap, Dx, Dy, 1)
     count = 0
-    cv2.imshow('path', img)
+    cv2.imshow('path', heatmap)
     points = []
     points.append([x, y])
 
     while (abs(x - Dx) > 5 or abs(y - Dy) > 5):
-        img = draw(img, x, y, 0)
-        cv2.imshow('path', img)
+        heatmap = draw(heatmap, x, y, 0)
+        cv2.imshow('path', heatmap)
         cv2.waitKey(10)
         # checking if bot is stationary for long
         if (abs(x - x1) < 1 and abs(y - y1) < 1):
@@ -104,7 +106,7 @@ def simulation(filename):
         y = (temp1)
         points.append([x, y])
 
-    cv2.imwrite('path.jpg', img)
+    cv2.imwrite('path.jpg', heatmap)
     cv2.waitKey(1000)
     Map = filter_map(map_sx, map_sy, X, Y, SIGMA_X, SIGMA_Y, TYPE)
     filter_waypoint(points, Map, map_sx, map_sy)
