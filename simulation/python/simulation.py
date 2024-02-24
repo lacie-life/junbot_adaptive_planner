@@ -44,12 +44,12 @@ def simulation(filename):
     # Draw grid
     img_gird_bg = np.zeros((map_sx, map_sy, 3), np.uint8)
     # Draw horizontal lines
-    for i in range(0, img_gird_bg.shape[0], grid_sz):
-        cv2.line(img_gird_bg, (0, i), (img_gird_bg.shape[1], i), (50, 50, 100), 1)
+    # for i in range(0, img_gird_bg.shape[0], grid_sz):
+    #     cv2.line(img_gird_bg, (0, i), (img_gird_bg.shape[1], i), (255, 255, 255), 1)
 
-    # Draw vertical lines
-    for i in range(0, img_gird_bg.shape[1], grid_sz):
-        cv2.line(img_gird_bg, (i, 0), (i, img_gird_bg.shape[0]), (50, 50, 100), 1)
+    # # Draw vertical lines
+    # for i in range(0, img_gird_bg.shape[1], grid_sz):
+    #     cv2.line(img_gird_bg, (i, 0), (i, img_gird_bg.shape[0]), (255, 255, 255), 1)
 
     # Combine the map and grid
     img = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.01, 0)
