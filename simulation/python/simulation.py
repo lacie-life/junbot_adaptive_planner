@@ -44,15 +44,15 @@ def simulation(filename):
     # Draw grid
     img_gird_bg = np.zeros((map_sx, map_sy, 3), np.uint8)
     # Draw horizontal lines
-    # for i in range(0, img_gird_bg.shape[0], grid_sz):
-    #     cv2.line(img_gird_bg, (0, i), (img_gird_bg.shape[1], i), (255, 255, 255), 1)
+    for i in range(0, img_gird_bg.shape[0], grid_sz):
+        cv2.line(img_gird_bg, (0, i), (img_gird_bg.shape[1], i), (0, 255, 255), 1)
 
-    # # Draw vertical lines
-    # for i in range(0, img_gird_bg.shape[1], grid_sz):
-    #     cv2.line(img_gird_bg, (i, 0), (i, img_gird_bg.shape[0]), (255, 255, 255), 1)
+    # Draw vertical lines
+    for i in range(0, img_gird_bg.shape[1], grid_sz):
+        cv2.line(img_gird_bg, (i, 0), (i, img_gird_bg.shape[0]), (0, 255, 255), 1)
 
     # Combine the map and grid
-    # img = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.01, 0)
+    img = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.01, 0)
     img = cv2.cvtColor(img.astype('uint8'), cv2.COLOR_BGR2GRAY)
     heatmap = cv2.applyColorMap(img, cv2.COLORMAP_HSV)
     cv2.imshow('path', heatmap)
