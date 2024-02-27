@@ -17,8 +17,8 @@ def att_field(px, py, mx, my):
 
 def rep_field(px, py, sx, sy, mx, my):
     res = np.zeros((mx, my))
-    tempX = 300
-    tempY = 150
+    tempX = 250
+    tempY = 50
     for x in range(mx):
         for y in range(my):
             thr = 5
@@ -30,15 +30,14 @@ def rep_field(px, py, sx, sy, mx, my):
                 vector2 = np.array([tempX-px, tempY-py])
                 # Tính góc giữa hai vector (trong đơn vị radian)
                 theta = np.arccos(np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2)))
-                if theta <= (math.pi/2):
-                    res[x, y] = (math.cos(theta))+(1 - 1 / d) ** 2
-                else:
-                    res[x, y] = (1 - 1 / d) ** 2
+                # if theta <= (math.pi/2):
+                res[x, y] = (75+75*math.cos(theta))*(1 - 1 / d) ** 2
+                # else:
+                #     res[x, y] = (1 - 1 / d) ** 2
                 res[x, y] = res[x, y] * 0.001
             else:
                 res[x, y] = 0
     return res
-
 
 def guassian(px, py, sx, sy, mx, my):
     res = np.zeros((mx, my))
