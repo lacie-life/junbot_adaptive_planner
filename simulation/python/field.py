@@ -11,7 +11,8 @@ def att_field(px, py, mx, my):
                 res[x, y] = t * d - 0.5 * (t ** 2)
             else:
                 res[x, y] = 0.5 * (d ** 2)
-            res[x, y] = 0.000001 * res[x, y]
+            res[x, y] = 0.0001 * res[x, y]
+            # print(res[x, y])
     return res
 
 
@@ -26,15 +27,16 @@ def rep_field(px, py, sx, sy, mx, my):
             d = math.sqrt(d)
             # Drawing the repulsive field
             if (d < 1 and d != 0):
-                vector1 = np.array([x-px, y-py])
-                vector2 = np.array([tempX-300, tempY-250])
+                vector1 = np.array([x - px, y - py])
+                vector2 = np.array([tempX - 300, tempY - 250])
                 # Tính góc giữa hai vector (trong đơn vị radian)
                 theta = np.arccos(np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2)))
                 # if theta <= (math.pi/2):
-                res[x, y] = (300+300*(math.cos(theta)))*(1 - 1 / d) ** 2
+                res[x, y] = (300 + 300 * (math.cos(theta))) * (1 - 1 / d) ** 2
                 # else:
                 #     res[x, y] = (1 - 1 / d) ** 2
-                res[x, y] = res[x, y] * 0.001
+                res[x, y] = res[x, y] * 0.0001
+                # print(res[x, y])
             else:
                 res[x, y] = 0
     return res
