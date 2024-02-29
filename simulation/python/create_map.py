@@ -15,13 +15,13 @@ def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
     # Create the map with repulsive and attractive fields in channel 1
     for i in range(n):
         if (TYPE[i] == 0):
-            Map[:, :, 2] += 15 * rep_field(X[i], Y[i], SIGMA_X[i], SIGMA_Y[i], mx, my)
+            Map[:, :, 0] += 15 * rep_field(X[i], Y[i], SIGMA_X[i], SIGMA_Y[i], mx, my)
         elif (TYPE[i] == 2):
-            Map[:, :, 2] += att_field(X[i], Y[i], mx, my)
+            Map[:, :, 0] += att_field(X[i], Y[i], mx, my)
     
     # Color encode the map for visualization
-    Map[:, :, 1] = Map[:, :, 2] * 0.5
-    Map[:, :, 0] = Map[:, :, 2] * 0.2
+    Map[:, :, 2] = Map[:, :, 0] * 0.5
+    Map[:, :, 1] = Map[:, :, 0] * 0.2
     
     return Map
 

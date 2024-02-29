@@ -39,24 +39,26 @@ def simulation(filename):
     cv2.namedWindow('path', cv2.WINDOW_NORMAL)
     Map = create_map(map_sx, map_sy, X, Y, SIGMA_X, SIGMA_Y, TYPE)
     img = np.zeros((map_sx, map_sy, 3), np.uint8)
-    img = Map * 8000
+    img = Map.copy()
 
     # Draw grid
     img_gird_bg = np.zeros((map_sx, map_sy, 3), np.uint8)
     # Draw horizontal lines
-    for i in range(0, img_gird_bg.shape[0], grid_sz):
-        cv2.line(img_gird_bg, (0, i), (img_gird_bg.shape[1], i), (0, 255, 255), 1)
-
-    # Draw vertical lines
-    for i in range(0, img_gird_bg.shape[1], grid_sz):
-        cv2.line(img_gird_bg, (i, 0), (i, img_gird_bg.shape[0]), (0, 255, 255), 1)
+    # for i in range(0, img.shape[0], grid_sz):
+    #     cv2.line(img, (0, i), (img.shape[1], i), (0, 255, 128), 1)
+    #
+    # # Draw vertical lines
+    # for i in range(0, img.shape[1], grid_sz):
+    #     cv2.line(img, (i, 0), (i, img.shape[0]), (0, 255, 128), 1)
 
     # Combine the map and grid
-    img = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.01, 0)
-    img = cv2.cvtColor(img.astype('uint8'), cv2.COLOR_BGR2GRAY)
-    heatmap = cv2.applyColorMap(img, cv2.COLORMAP_HSV)
-    cv2.imshow('path', heatmap)
-    # cv2.waitKey(0)
+    # img = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.1, 0)
+    # img = cv2.cvtColor(img.astype('uint8'), cv2.COLOR_BGR2GRAY)
+    # heatmap = cv2.applyColorMap(img, cv2.COLORMAP_JET)
+    # heatmap = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.5, 0.1)
+
+    cv2.imshow('path', img)
+    cv2.waitKey(0)
 
     # Find the path
     for i in range(len(X)):
@@ -73,43 +75,43 @@ def simulation(filename):
     points = []
     points.append([x, y])
 
-    while (abs(x - Dx) > 5 or abs(y - Dy) > 5):
-        heatmap = draw(heatmap, x, y, 0)
-        cv2.imshow('path', heatmap)
-        cv2.waitKey(10)
-        # checking if bot is stationary for long
-        if (abs(x - x1) < 1 and abs(y - y1) < 1):
-            count += 1
-        else:
-            count = 0
-        # to avoid local minima
-        if (count > 10):
-            m = 100000
-            for i in range(-10, 11):
-                for j in range(-10, 11):
-                    if (i != 0 or j != 0):
-                        if (Map[int(x + i), int(y + j), 1] - Map[int(x), int(y), 1] < m):
-                            m = Map[int(x + i), int(y + j), 1] - Map[int(x), int(y), 1]
-                            temp0 = x - 1.5 * alpha * m
-                            temp1 = y - 1.5 * alpha * m
-            x = (temp0)
-            y = (temp1)
-            count = 0
-            points.append([x, y])
-            continue
-        # gradient descent
-        x1 = x
-        y1 = y
-        temp0 = x - alpha * (Map[int(x) + 3, int(y), 1] - Map[int(x), int(y), 1])
-        temp1 = y - alpha * (Map[int(x), int(y) + 3, 1] - Map[int(x), int(y), 1])
-        x = (temp0)
-        y = (temp1)
-        points.append([x, y])
-
-    cv2.imwrite('path.jpg', heatmap)
-    cv2.waitKey(1000)
-    Map = filter_map(map_sx, map_sy, X, Y, SIGMA_X, SIGMA_Y, TYPE)
-    filter_waypoint(points, Map, map_sx, map_sy)
+    # while (abs(x - Dx) > 5 or abs(y - Dy) > 5):
+    #     heatmap = draw(heatmap, x, y, 0)
+    #     cv2.imshow('path', heatmap)
+    #     cv2.waitKey(10)
+    #     # checking if bot is stationary for long
+    #     if (abs(x - x1) < 1 and abs(y - y1) < 1):
+    #         count += 1
+    #     else:
+    #         count = 0
+    #     # to avoid local minima
+    #     if (count > 10):
+    #         m = 100000
+    #         for i in range(-10, 11):
+    #             for j in range(-10, 11):
+    #                 if (i != 0 or j != 0):
+    #                     if (Map[int(x + i), int(y + j), 1] - Map[int(x), int(y), 1] < m):
+    #                         m = Map[int(x + i), int(y + j), 1] - Map[int(x), int(y), 1]
+    #                         temp0 = x - 1.5 * alpha * m
+    #                         temp1 = y - 1.5 * alpha * m
+    #         x = (temp0)
+    #         y = (temp1)
+    #         count = 0
+    #         points.append([x, y])
+    #         continue
+    #     # gradient descent
+    #     x1 = x
+    #     y1 = y
+    #     temp0 = x - alpha * (Map[int(x) + 3, int(y), 1] - Map[int(x), int(y), 1])
+    #     temp1 = y - alpha * (Map[int(x), int(y) + 3, 1] - Map[int(x), int(y), 1])
+    #     x = (temp0)
+    #     y = (temp1)
+    #     points.append([x, y])
+    #
+    # cv2.imwrite('path.jpg', heatmap)
+    # cv2.waitKey(1000)
+    # Map = filter_map(map_sx, map_sy, X, Y, SIGMA_X, SIGMA_Y, TYPE)
+    # filter_waypoint(points, Map, map_sx, map_sy)
     return
 
 
