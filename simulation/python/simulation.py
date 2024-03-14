@@ -46,11 +46,18 @@ def simulation(filename):
     # Draw horizontal lines
     # for i in range(0, img.shape[0], grid_sz):
     #     cv2.line(img, (0, i), (img.shape[1], i), (0, 255, 128), 1)
-    #
+    
     # # Draw vertical lines
     # for i in range(0, img.shape[1], grid_sz):
     #     cv2.line(img, (i, 0), (i, img.shape[0]), (0, 255, 128), 1)
-
+    cv2.line(img, (125, 275), (375, 275), (0, 255, 128), 1)
+    cv2.line(img, (125, 425), (375, 425), (0, 255, 128), 1)
+    for i in range(125, 351, 50):
+        cv2.line(img, (i, 275), (i, 425), (0, 255, 128), 1)
+    cv2.line(img, (125, 425), (125, 275), (0, 255, 128), 1)
+    cv2.line(img, (375, 275), (375, 425), (0, 255, 128), 1)
+    for i in range(275, 426, 50):
+        cv2.line(img, (125, i), (375, i), (0, 255, 128), 1)
     # Combine the map and grid
     # img = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.1, 0)
     # img = cv2.cvtColor(img.astype('uint8'), cv2.COLOR_BGR2GRAY)
