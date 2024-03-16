@@ -17,6 +17,7 @@
 #include <custom_msgs/Obstacles.h>
 #include <mutex>
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
+#include "geometry_msgs/Twist.h"
 
 double calculateDistance (double Xa, double Ya, double Xb, double Yb);
 // TODO: Subscribe map infor
@@ -28,6 +29,13 @@ struct Point
     float z;
 };
 
+struct field_value
+{
+    float x;
+    float y;
+    float value;
+};
+
 ros::Subscriber subPlan;
 ros::Subscriber subObj;
 ros::Publisher pubObj;
@@ -36,6 +44,8 @@ nav_msgs::Path path;
 ros::Publisher pub;
 custom_msgs::Obstacles object;
 std::mutex m;
+float vel_robot[2];
+std::vector<field_value> res;
 
 void globalPlanCallback(nav_msgs::Path::ConstPtr tempPath)
 {
@@ -51,6 +61,12 @@ void globalPlanCallback(nav_msgs::Path::ConstPtr tempPath)
 void poseAMCLCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg_amcl)
 {
     amcl_pose = msg_amcl->pose;
+}
+
+void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg)
+{
+    vel_robot[0]= msg->linear.x;
+    vel_robot[1] = msg->linear.y;
 }
 
 void objectCallback(custom_msgs::Obstacles::ConstPtr objTemp)
@@ -120,26 +136,30 @@ void calculate_field(Point center_point){
     float sy = 1;
     float rel = 0.1;
     distance_center_robot = sqrt(((amcl_pose.pose.pose.position.x - center_point.x)(amcl_pose.pose.pose.position.x - center_point.x))
-    +((amcl_pose.pose.pose.position.y - center_point.y)(amcl_pose.pose.pose.position.y - center_point.y)))
+    +((amcl_pose.pose.pose.position.y - center_point.y)(amcl_pose.pose.pose.position.y - center_point.y)));
     for (float x = center_point.x+distance_center_robot; x < center_point.x-distance_center_robot; x = x - rel)
     {
         for (float y = center_point.y+distance_center_robot; x < center_point.y-distance_center_robot; y = y - rel)
         {
 
             float distance = sqrt(((amcl_pose.pose.pose.position.x - center_point.x)(amcl_pose.pose.pose.position.x - center_point.x)/(distance_center_robot*distance_center_robot))
-            +((amcl_pose.pose.pose.position.y - center_point.y)(amcl_pose.pose.pose.position.y - center_point.y)/(distance_center_robot*distance_center_robot)))
+            +((amcl_pose.pose.pose.position.y - center_point.y)(amcl_pose.pose.pose.position.y - center_point.y)/(distance_center_robot*distance_center_robot)));
             
             if (d != 0){
-                vector1 = np.array([x-px, y-py])
-                vector2 = np.array([tempX-300, tempY-250])
+                float vector1 = [x-center_point.x y-center_point.x];
+                float vector2 = [vel_x vel_y]; // velocity of obtacle
+                vector2 = vector2 + vel_robot;
                 double theta = acos(dot_product(vector1, vector2) / (norm(vector1) * norm(vector2)));
+                res_temp = (200 + 200 * cos(theta)) * pow((1 - 1 / distance), 2);
             }
-                
-                res[x, y] = (200+200*(math.cos(theta)))*(1 - 1 / d) ** 2
-                # if res[x, y] > 1:
-                #     res[x, y] = 1
-            else:
-                res[x, y] = 0
+            else{
+                res_temp= 0;
+            }
+            field_value field_temp;
+            field_temp.x = x;
+            field_temp.y = y;
+            field_temp.value = res_temp;
+            res.push_back(field_temp);
         }
     }
 }
@@ -153,6 +173,7 @@ int main(int argc, char **argv) {
     ros::NodeHandle n;
     subPlan = n.subscribe("/move_base/DWAPlannerROS/global_plan", 10000, globalPlanCallback);
     ros::Subscriber sub_amcl = n.subscribe("/amcl_pose", 1000, poseAMCLCallback);
+    ros::Subscriber sub = n.subscribe("cmd_vel", 1000, cmdVelCallback);
     subObj = n.subscribe("/object_costmap_layer/obstacles_temp", 10000, objectCallback);
     pubObj = n.advertise<custom_msgs::Obstacles>("/object_costmap_layer/obstacles", 1000);
 
