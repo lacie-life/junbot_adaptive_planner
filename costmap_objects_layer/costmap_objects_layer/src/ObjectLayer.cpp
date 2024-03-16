@@ -337,6 +337,7 @@ namespace object_layer
         // }
 
         // set costs of obstacle polygons
+        // TODO: calculate APF
         std::cout << "Number polygon: " << _obstacle_polygons.size() << "\n";
 
         for (int i = 0; i < _obstacle_polygons.size(); ++i)
