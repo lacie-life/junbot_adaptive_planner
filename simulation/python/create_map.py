@@ -3,6 +3,7 @@ from field import rep_field
 from field import att_field
 from field import guassian
 import cv2
+import math
 
 
 def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
@@ -18,7 +19,11 @@ def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
     inter = [] # intersection between position robot with center pixel
     for i in range(n):
         if (TYPE[i] == 0):
-            Map[:, :, 0] += 15 * rep_field(X[i], Y[i], SIGMA_X[i], SIGMA_Y[i], mx, my)
+            posRbX, posRbY = [50, 250]
+            dis = math.sqrt((posRbX-Y[i])*(posRbX-Y[i])+(posRbY-X[i])*(posRbY-X[i]))
+            dis = (1/math.log(dis))*750
+            print (dis)
+            Map[:, :, 0] += 15 * rep_field(X[i], Y[i], dis, dis, mx, my)
             centerX = Y[i]
             centerY = X[i]
             for Cx in range(60, 350, 1):

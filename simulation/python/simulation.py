@@ -63,6 +63,8 @@ def simulation(filename):
     # img = cv2.cvtColor(img.astype('uint8'), cv2.COLOR_BGR2GRAY)
     # heatmap = cv2.applyColorMap(img, cv2.COLORMAP_JET)
     # heatmap = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.5, 0.1)
+    cv2.circle(img,(50, 250), 2, (0, 255, 128), 1)
+    cv2.circle(img,(150, 300), 2, (0, 255, 128), 1)
 
     cv2.imshow('path', img)
     cv2.waitKey(0)
