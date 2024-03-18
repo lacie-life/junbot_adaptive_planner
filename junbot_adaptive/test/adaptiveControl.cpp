@@ -119,7 +119,6 @@ vector<Point> findPointsOnRectangleEdges(Point A, Point B, Point C, Point D) {
     for (int i = 0; i <= num_points_DA; ++i) {
         points.push_back({D.x + i * increment_DA_x, D.y + i * increment_DA_y});
     }
-
     return points;
 }
 
@@ -150,6 +149,7 @@ void calculate_field(Point center_point){
                 float vector2 = [vel_x vel_y]; // velocity of obtacle
                 vector2 = vector2 + vel_robot;
                 double theta = acos(dot_product(vector1, vector2) / (norm(vector1) * norm(vector2)));
+                // res_temp = epsilon*norm(vector2)(1 + cos(theta)) * pow((1 - 1 / distance), 2);
                 res_temp = (200 + 200 * cos(theta)) * pow((1 - 1 / distance), 2);
             }
             else{
@@ -162,6 +162,7 @@ void calculate_field(Point center_point){
             res.push_back(field_temp);
         }
     }
+    
 }
 
 /**
@@ -190,6 +191,7 @@ int main(int argc, char **argv) {
         temp.x = coner_temp[i][0];
         temp.y = coner_temp[i][1];
         coner.push_back(temp);
+
     }
     std::vector<Point> center_point = findPointsOnLine(coner.at(0), coner.at(1), coner.at(2),coner.at(3));
     for (int i = 0; i < center_point.size(); i++)
@@ -216,6 +218,7 @@ int main(int argc, char **argv) {
                         waypointError.push_back(p);
                     }
                 }
+                
                 // if (waypointError.size()>1)
                 // {
                 //     geometry_msgs::Point _begin = waypointError.at(0);
