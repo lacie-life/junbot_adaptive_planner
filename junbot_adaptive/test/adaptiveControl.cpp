@@ -18,6 +18,7 @@
 #include <mutex>
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include "geometry_msgs/Twist.h"
+#include "concavehull.hpp"
 
 double calculateDistance (double Xa, double Ya, double Xb, double Yb);
 // TODO: Subscribe map infor
@@ -175,13 +176,13 @@ int main(int argc, char **argv) {
     subPlan = n.subscribe("/move_base/DWAPlannerROS/global_plan", 10000, globalPlanCallback);
     ros::Subscriber sub_amcl = n.subscribe("/amcl_pose", 1000, poseAMCLCallback);
     ros::Subscriber sub = n.subscribe("cmd_vel", 1000, cmdVelCallback);
-    subObj = n.subscribe("/object_costmap_layer/obstacles_temp", 10000, objectCallback);
+    subObj = n.subscribe("/object_costmap_layer/obstacles_temp", 1000, objectCallback);
     pubObj = n.advertise<custom_msgs::Obstacles>("/object_costmap_layer/obstacles", 1000);
 
     float coner_temp[4][3] = {{0.22,-0.6,0},
-                                {0.22,-1.8,0},
-                                {-3.6,-1.7,0},
-                                {-3.6,-0.35,0}};
+                            {0.22,-1.8,0},
+                            {-3.6,-1.7,0},
+                            {-3.6,-0.35,0}};
     // coner experiment
     ros::Rate rate(1);
     std::vector<Point> coner;
