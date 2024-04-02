@@ -424,7 +424,7 @@ namespace object_layer
         std::vector<PointInt> polygon_bound;
 
         // get the cells that fill the polygon
-        rasterizePolygon(map_polygon, polygon_cells, polygon_bound, mfill_polygon);
+        rasterizePolygon(map_polygon, polygon_cells, polygon_bound, fill_polygon);
 
         // set the cost of those cells
         for (unsigned int i = 0; i < polygon_cells.size(); ++i)

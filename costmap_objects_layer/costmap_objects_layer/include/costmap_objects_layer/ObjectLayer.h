@@ -68,7 +68,7 @@ namespace object_layer
         /// \param polygon             Polygon defined  by a vector of map coordinates
         /// \param fill                If true, the interior of the polygon will be considered as well
         /// \param[out] polygon_cells  new cells in map coordinates are pushed back on this container
-        void rasterizePolygon(const std::vector<PointInt> &polygon, std::vector<PointInt> &polygon_cells, bool fill);
+        void rasterizePolygon(const std::vector<PointInt> &polygon, std::vector<PointInt> &polygon_cells, std::vector<PointInt> &bound,bool fill);
 
         /// \brief                     extracts the boundary of a polygon in terms of map cells
         /// \note                      this method is based on Costmap2D::polygonOutlineCells() but accounts for a self - implemented raytrace algorithm and allows negative map coordinates
