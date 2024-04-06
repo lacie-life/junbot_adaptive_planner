@@ -1,0 +1,9 @@
+<launch>
+
+    <arg name="model_path" default="$(find object_mapping)/data/yolov5s.engine" />
+    <arg name="svo_path" default="/home/orin/Downloads/ZED2_HD2K_Runners_H265.svo" />
+
+    <node name="object_mapping" type="object_mapping" pkg="object_mapping" output="screen" args = "$(arg model_path) $(arg svo_path)" />
+    
+</launch>
+

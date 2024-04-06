@@ -47,8 +47,8 @@ int main(int argc, char** argv) {
     // Custom OD
     sl::ObjectDetectionParameters detection_parameters;
     detection_parameters.enable_tracking = true;
-    detection_parameters.enable_mask_output = false; // designed to give person pixel mask
-    detection_parameters.detection_model = sl::DETECTION_MODEL::CUSTOM_BOX_OBJECTS;
+    detection_parameters.enable_segmentation = false; // designed to give person pixel mask
+    detection_parameters.detection_model = sl::OBJECT_DETECTION_MODEL::CUSTOM_BOX_OBJECTS;
     returned_state = zed.enableObjectDetection(detection_parameters);
 
     if (returned_state != sl::ERROR_CODE::SUCCESS) {
