@@ -1,0 +1,7 @@
+<launch>
+
+    <arg name="model_path" default="$(find object_mapping)/data/yolov5s.engine" />
+    <node name="object_mapping" type="object_mapping" pkg="object_mapping" output="screen" args = "$(arg model_path)" />
+    
+</launch>
+
