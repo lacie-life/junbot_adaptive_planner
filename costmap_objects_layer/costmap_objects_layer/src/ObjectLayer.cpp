@@ -421,15 +421,18 @@ namespace object_layer
         }
 
         std::vector<PointInt> polygon_cells;
+        std::vector<PointInt> polygon_bound;
 
         // get the cells that fill the polygon
-        rasterizePolygon(map_polygon, polygon_cells, fill_polygon);
+        rasterizePolygon(map_polygon, polygon_cells, polygon_bound, fill_polygon);
 
         // set the cost of those cells
         for (unsigned int i = 0; i < polygon_cells.size(); ++i)
         {
+
             int mx = polygon_cells[i].x;
             int my = polygon_cells[i].y;
+
             // check if point is outside bounds
             if (mx < min_i || mx >= max_i)
                 continue;
@@ -493,7 +496,7 @@ namespace object_layer
         }
     }
 
-    void ObjectLayer::rasterizePolygon(const std::vector<PointInt> &polygon, std::vector<PointInt> &polygon_cells, bool fill)
+    void ObjectLayer::rasterizePolygon(const std::vector<PointInt> &polygon, std::vector<PointInt> &polygon_cells, std::vector<PointInt> &bound,bool fill)
     {
         // this implementation is a slighly modified version of Costmap2D::convexFillCells(...)
 
@@ -503,6 +506,9 @@ namespace object_layer
 
         // first get the cells that make up the outline of the polygon
         polygonOutlineCells(polygon, polygon_cells);
+
+        // polygon_cells => boundary of ploygon
+        bound = polygon_cells;
 
         if (!fill)
             return;
