@@ -231,6 +231,7 @@ void GLViewer::updateData(sl::Mat &matXYZRGBA, std::vector<sl::ObjectData> &objs
                     BBox_edges.addLine(centroid3, centroid4, sl::float4(1.f, 0.5f, 0.5f, 1.f));
                 }
 
+                # if 0
                 //Display sekeleton if available
                 auto clr_bones = generateColorID_f(objs[i].id);
                 auto keypoints = objs[i].keypoint;
@@ -242,6 +243,7 @@ void GLViewer::updateData(sl::Mat &matXYZRGBA, std::vector<sl::ObjectData> &objs
                             skeletons.addLine(kp_1, kp_2, clr_bones);
                     }
                 }
+                #endif
                 createBboxRendering(bb_, clr_id);
             }
         }

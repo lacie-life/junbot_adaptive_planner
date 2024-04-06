@@ -26,11 +26,12 @@ Adaptive planner for Junbot based on object mapping
 - Other dependence.
     ```bash
     sudo apt install python-is-python3 \
+    nlohmann-json3-dev \
     ros-noetic-amcl \
     ros-noetic-base-local-planner \
     ros-noetic-map-server \
     ros-noetic-move-base \
-    ros-no
+    ros-noetic-vision-msgs 
     ```
     
 ## Node list
