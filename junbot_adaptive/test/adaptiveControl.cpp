@@ -11,6 +11,8 @@
 #include "std_msgs/String.h"
 #include <geometry_msgs/PoseStamped.h>
 #include <tf/transform_datatypes.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_ros/transform_listener.h>
 #include <move_base_msgs/MoveBaseActionGoal.h>
 #include <actionlib/client/simple_action_client.h>
 #include <actionlib/server/simple_action_server.h>
@@ -18,6 +20,7 @@
 #include <mutex>
 #include <stack>
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
+#include "geometry_msgs/PoseStamped.h"
 #include "geometry_msgs/Twist.h"
 #include "concavehull.hpp"
 
@@ -187,7 +190,7 @@ void calculate_field(Point center_point){
     +((amcl_pose.pose.position.y - center_point.y)*(amcl_pose.pose.position.y - center_point.y))); // distance between robot and center point
     for (double x = center_point.x+distance_center_robot; x < center_point.x-distance_center_robot; x = x - rel)
     {
-        for (double y = center_point.y+distance_center_robot; x < center_point.y-distance_center_robot; y = y - rel)
+        for (double y = center_point.y+distance_center_robot; y < center_point.y-distance_center_robot; y = y - rel)
         {
             field_value point_value;
             double value_temp = 0;
@@ -206,18 +209,20 @@ void calculate_field(Point center_point){
             else {
                 value_temp = 0;
             }
+            // ROS_INFO("Value: %f", value_temp);
             point_value.x = x;
             point_value.y = y;
             point_value.value = value_temp;
             res.push_back(point_value);
         }
-    } 
+    }
 }
 
 // Prints convex hull of a set of n points.
 std::vector<field_value> convexHull()
 {
     int n = res.size();
+
     // Find the bottommost point
     int ymin = res.at(0).y;
     int min = 0;
@@ -235,7 +240,6 @@ std::vector<field_value> convexHull()
     
     // Place the bottom-most point at first position
     swap_point(res.at(0), res.at(min));
- 
     // Sort n-1 points with respect to the first point.
     // A point p1 comes before p2 in sorted output if p2
     // has larger polar angle (in counterclockwise
@@ -303,10 +307,15 @@ int main(int argc, char **argv) {
     subObj = n.subscribe("/object_costmap_layer/obstacles_temp", 1000, objectCallback);
     pubObj = n.advertise<custom_msgs::Obstacles>("/object_costmap_layer/obstacles", 1000);
 
-    double coner_temp[4][3] = {{0.22,-0.6,0},
-                            {0.22,-1.8,0},
-                            {-3.6,-1.7,0},
-                            {-3.6,-0.35,0}};
+    // double coner_temp[4][3] = {{0.22,-0.6,0},
+    //                         {0.22,-1.8,0},
+    //                         {-3.6,-1.7,0},
+    //                         {-3.6,-0.35,0}};
+
+    double coner_temp[4][3] =   {{-2,3,0},
+                                 {-2,2,0},
+                                {-3.37,2,0},
+                                {-3.37,3,0}};
     // coner experiment
     ros::Rate rate(1);
     std::vector<Point> coner;
@@ -316,12 +325,37 @@ int main(int argc, char **argv) {
         temp.x = coner_temp[i][0];
         temp.y = coner_temp[i][1];
         coner.push_back(temp);
-
     }
-
     std::vector<Point> center_point = findPointsOnRectangleEdges(coner.at(0), coner.at(1), coner.at(2),coner.at(3));
+    int count = 0;
     for (int i = 0; i < center_point.size(); i++)
     {
+        std::cout << "Center: " << center_point.at(i).x << " " << center_point.at(i).y << "\n";
+        geometry_msgs::PoseStamped::Ptr object_pose = boost::make_shared<geometry_msgs::PoseStamped>();
+        object_pose->pose.position.x = center_point.at(i).x;
+        object_pose->pose.position.y = center_point.at(i).y;
+        object_pose->pose.position.z = 0;
+        object_pose->pose.orientation.w = 1;
+        object_pose->header.frame_id = "";
+        static tf2_ros::Buffer tf_buffer;
+        static tf2_ros::TransformListener tf_listener(tf_buffer);
+
+        try {
+            // Wait for the transformation to be available
+            geometry_msgs::TransformStamped transformStamped;
+            transformStamped = tf_buffer.lookupTransform("map", "base_footprint", ros::Time::now(),ros::Duration(1.0));
+
+            // Transform object pose to local map frame
+            geometry_msgs::PoseStamped object_pose_local;
+            tf2::doTransform(*object_pose, object_pose_local, transformStamped);
+
+            center_point.at(i).x = object_pose_local.pose.position.x;
+            center_point.at(i).y = object_pose_local.pose.position.y;
+
+        } catch (tf2::TransformException &ex) {
+            ROS_WARN("Failed to transform object pose: %s", ex.what());
+        }
+        std::cout << "Center1: " << center_point.at(i).x << " " << center_point.at(i).y << "\n";
         calculate_field(center_point.at(i));
     }
     for (int i = 0; i < res.size(); i++)
