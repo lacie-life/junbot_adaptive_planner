@@ -66,6 +66,7 @@ Place the TensorRT installer deb-package in this directory and rename it to nv-t
 
 Build the Docker image with below command.
 
+```bash
 docker buildx build \
     --load \
     --platform $(uname)/$(uname -m) \
@@ -76,7 +77,7 @@ docker buildx build \
     --build-arg INSTALL_AS_DEV=1 \
     --tag ate_junbot \
     .
-    
+```    
 ## Node list
 
 - Add object layer
