@@ -64,7 +64,7 @@ Download a TensorRT 8.5.1 installer deb-package from NVIDIA's download page (log
 
 Place the TensorRT installer deb-package in this directory and rename it to nv-tensorrt-local-repo-$(dpkg --print-architecture).deb.
 
-Build the Docker image with below command.
+Build the Docker image with the below command.
 
 ```bash
 docker buildx build \
