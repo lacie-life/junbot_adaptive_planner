@@ -46,6 +46,11 @@ sudo apt-get install ros-noetic-joy ros-noetic-teleop-twist-joy \
   ros-noetic-gmapping ros-noetic-navigation ros-noetic-interactive-markers \
   ros-noetic-dynamixel-sdk ros-noetic-turtlebot3-msgs
 ```
+
+
+export ROS_MASTER_URI=http://127.0.0.1:11311
+export ROS_HOSTNAME=127.0.0.1
+export ROS_IP=127.0.0.1
     
 ## Node list
 
