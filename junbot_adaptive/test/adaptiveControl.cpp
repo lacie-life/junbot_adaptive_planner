@@ -136,10 +136,10 @@ double distanceBetweenPoints(Point p1, Point p2) {
 std::vector<Point> findPointsOnRectangleEdges(Point A, Point B, Point C, Point D) {
     std::vector<Point> points;
 
-    double num_points_AB = distanceBetweenPoints(A, B) / 0.1;
-    double num_points_BC = distanceBetweenPoints(B, C) / 0.1;
-    double num_points_CD = distanceBetweenPoints(C, D) / 0.1;
-    double num_points_DA = distanceBetweenPoints(D, A) / 0.1;
+    double num_points_AB = distanceBetweenPoints(A, B) / 0.5;
+    double num_points_BC = distanceBetweenPoints(B, C) / 0.5;
+    double num_points_CD = distanceBetweenPoints(C, D) / 0.5;
+    double num_points_DA = distanceBetweenPoints(D, A) / 0.5;
 
     double increment_AB_x = (B.x - A.x) / num_points_AB;
     double increment_AB_y = (B.y - A.y) / num_points_AB;
@@ -199,17 +199,18 @@ void calculate_field(Point center_point){
     double sy = 1.5;
     double rel = 0.1; // resolution
     double distance_center_robot = sqrt((center_point.x)*(center_point.x)+(center_point.y)*(center_point.y));
+    int count = 0;
     if (distance_center_robot < 2)
     {
-        for (double x = -2; x < 2; x = x + rel)
+        for (double x = -1; x < 1; x = x + rel)
         {
-            for (double y = -2; y < 2; y = y + rel)
+            for (double y = -1; y < 1; y = y + rel)
             {
                 field_value point_value;
                 double value_temp = 0;
                 double distance_center_point = sqrt(((x - center_point.x)*(x - center_point.x))
                 +((y - center_point.y)*(y - center_point.y))); // distance between robot and center point
-                if (distance_center_point != 0 && distance_center_point < 0.5)
+                if (distance_center_point != 0 && distance_center_point < 0.3)
                 {
                     double vector1[] = {x - center_point.x, y - center_point.y}; //A(x_a, y_a), B(x_b, y_b) -> AB(x_b - x_a, y_b - y_a)
                     double vector2[] = {0.01, 0};//vel_x, vel_y }; // velocity of obstacle
@@ -242,7 +243,7 @@ void calculate_field(Point center_point){
                     // Wait for the transformation to be available
                     try
                     {
-                        transformStamped = tf_buffer.lookupTransform("odom", "base_footprint", ros::Time::now(),ros::Duration(1.0));
+                        transformStamped = tf_buffer.lookupTransform("odom", "base_footprint", ros::Time::now(),ros::Duration(0.5));
                     }
                     catch (tf::TransformException ex){
                         ROS_ERROR("%s",ex.what());
@@ -252,7 +253,6 @@ void calculate_field(Point center_point){
                     geometry_msgs::PoseStamped object_pose_global;
                     tf2::doTransform(*object_pose, object_pose_global, transformStamped);
                     
-                    point_value.value = 0;
                     if (isnan(object_pose_global.pose.position.x) || isnan(object_pose_global.pose.position.y))
                     {
                         y = y - rel;
@@ -262,14 +262,14 @@ void calculate_field(Point center_point){
                     {
                         point_value.x = object_pose_global.pose.position.x;
                         point_value.y = object_pose_global.pose.position.y;
+                        count++;
                         res.push_back(point_value);
                     }
                 }
             }
         }
     }
-     
-    
+    ROS_INFO("count: %d", count);
 }
 
 // Prints convex hull of a set of n points.
@@ -378,7 +378,6 @@ int main(int argc, char **argv) {
     while (ros::ok())
     {
         m.lock();
-        // std::vector<Point> center_point = findPointsOnRectangleEdges(coner.at(0), coner.at(1), coner.at(2),coner.at(3));
         res.clear();
         std::vector<Point> coner;
         for (int i = 0; i < 4; i++)
@@ -388,11 +387,13 @@ int main(int argc, char **argv) {
             temp.y = coner_temp[i][1];
             coner.push_back(temp);
         }
-        for (int i = 0; i < coner.size()-3; i++)
+        std::vector<Point> center_point = findPointsOnRectangleEdges(coner.at(0), coner.at(1), coner.at(2),coner.at(3));
+        ROS_INFO("center_point size: %d", center_point.size());
+        for (int i = 0; i < center_point.size(); i++)
         {
             geometry_msgs::PoseStamped::Ptr object_pose = boost::make_shared<geometry_msgs::PoseStamped>();
-            object_pose->pose.position.x = coner.at(i).x;
-            object_pose->pose.position.y = coner.at(i).y;
+            object_pose->pose.position.x = center_point.at(i).x;
+            object_pose->pose.position.y = center_point.at(i).y;
             object_pose->pose.position.z = 0;
             object_pose->pose.orientation.w = 1;
             object_pose->header.frame_id = "odom";
@@ -402,7 +403,7 @@ int main(int argc, char **argv) {
             // Wait for the transformation to be available
             try
             {
-                transformStamped = tf_buffer.lookupTransform("base_footprint", "odom", ros::Time::now(),ros::Duration(1.0));
+                transformStamped = tf_buffer.lookupTransform("base_footprint", "odom", ros::Time::now(),ros::Duration(0.5));
             }
             catch (tf::TransformException ex){
                 ROS_ERROR("%s",ex.what());
@@ -418,16 +419,16 @@ int main(int argc, char **argv) {
             }
             else
             {
-                coner.at(i).x = object_pose_local.pose.position.x;
-                coner.at(i).y = object_pose_local.pose.position.y;
-                calculate_field(coner.at(i));
+                center_point.at(i).x = object_pose_local.pose.position.x;
+                center_point.at(i).y = object_pose_local.pose.position.y;
+                calculate_field(center_point.at(i));
             }
         }
         // field_value* res_temp = res.data();
         // int n_temp = sizeof(res_temp)/sizeof(res_temp[0]);
         // std::vector<field_value> bound = convexHull (res_temp,n_temp);
         std::vector<field_value> bound = res;
-        ROS_INFO("bound size: %d", bound.size());
+        // ROS_INFO("bound size: %d", bound.size());
         custom_msgs::Form objectNew_temp;
         custom_msgs::Obstacles objectNew;
         for (int i = 0; i < 1; ++i) {// number object
@@ -441,13 +442,6 @@ int main(int argc, char **argv) {
             
         }
         objectNew.list.push_back(objectNew_temp);
-        for (int i = 0; i < objectNew.list.at(0).form.size(); i++)
-        {
-            std::cout << i << "\n";
-            std::cout << objectNew.list.at(0).form.at(i).x << "     :    ";
-            std::cout << objectNew.list.at(0).form.at(i).y << "     :    ";
-            std::cout << objectNew.list.at(0).form.at(i).z << "\n";
-        }
         if(bound.size() > 0)
         {
             pubObj.publish(objectNew);
