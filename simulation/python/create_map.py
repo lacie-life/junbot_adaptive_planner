@@ -4,6 +4,8 @@ from field import att_field
 from field import guassian
 import cv2
 import math
+from scipy.spatial import ConvexHull, convex_hull_plot_2d
+import matplotlib.pyplot as plt
 
 
 def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
@@ -22,7 +24,6 @@ def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
             posRbX, posRbY = [50, 250]
             dis = math.sqrt((posRbX-Y[i])*(posRbX-Y[i])+(posRbY-X[i])*(posRbY-X[i]))
             dis = (1/math.log(dis))*750
-            print (dis)
             Map[:, :, 0] += 15 * rep_field(X[i], Y[i], dis, dis, mx, my)
             centerX = Y[i]
             centerY = X[i]
@@ -35,10 +36,34 @@ def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
         elif (TYPE[i] == 2):
             Map[:, :, 0] += att_field(X[i], Y[i], mx, my)
     # Color encode the map for visualization
+    hull_temp = []
+    for i in range(Map.shape[0]):
+        for j in range(Map.shape[1]):
+            if Map[i, j, 0] > 3 and Map[i, j, 0] < 10:
+                hull_temp.append([j, i])
+
+    hull_temp = np.array(hull_temp)
+    hull = ConvexHull(hull_temp)
+    # fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(10, 3))
+
+    # for ax in (ax1, ax2):
+    #     ax.plot(hull_temp[:, 0], hull_temp[:, 1], '.', color='k')
+    #     if ax == ax1:
+    #         ax.set_title('Given points')
+    #     else:
+    #         ax.set_title('Convex hull')
+    #         for simplex in hull.simplices:
+    #             ax.plot(hull_temp[simplex, 0], hull_temp[simplex, 1], 'c')
+    #         ax.plot(hull_temp[hull.vertices, 0], hull_temp[hull.vertices, 1], 'o', mec='r', color='none', lw=1, markersize=10)
+    #     ax.set_xticks(range(10))
+    #     ax.set_yticks(range(10))
+    # plt.show()
+    
+    
     Map[:, :, 2] = Map[:, :, 0] * 0.5
     Map[:, :, 1] = Map[:, :, 0] * 0.2
     
-    return Map
+    return Map, hull, hull_temp
 
 
 def filter_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):

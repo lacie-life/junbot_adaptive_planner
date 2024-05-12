@@ -3,6 +3,8 @@ import numpy as np
 import cv2
 from create_map import *
 from filter_waypoint import *
+from scipy.spatial import ConvexHull, convex_hull_plot_2d
+import os
 
 '''
 simulation() takes .xlsx file as an input
@@ -17,6 +19,7 @@ Sheet-2 :
    mapsize_x mapsize_y
 
 '''
+
 
 
 def simulation(filename):
@@ -37,9 +40,14 @@ def simulation(filename):
 
     # Create the map
     cv2.namedWindow('path', cv2.WINDOW_NORMAL)
-    Map = create_map(map_sx, map_sy, X, Y, SIGMA_X, SIGMA_Y, TYPE)
+    Map, hull, hull_temp = create_map(map_sx, map_sy, X, Y, SIGMA_X, SIGMA_Y, TYPE)
+    
     img = np.zeros((map_sx, map_sy, 3), np.uint8)
     img = Map.copy()
+    print(hull_temp[hull.vertices, 0])
+    for i in range(hull_temp[hull.vertices, 0].shape[0]-1):
+        cv2.line(img, (int(hull_temp[hull.vertices, 0][i]), int(hull_temp[hull.vertices, 1][i])), (int(hull_temp[hull.vertices, 0][i+1]), int(hull_temp[hull.vertices, 1][i+1])), (0, 255, 128), 1)
+
 
     # Draw grid
     img_gird_bg = np.zeros((map_sx, map_sy, 3), np.uint8)
@@ -67,6 +75,7 @@ def simulation(filename):
     cv2.circle(img,(150, 300), 2, (0, 255, 128), 1)
 
     cv2.imshow('path', img)
+    # cv2.setMouseCallback('path', save_pixel)
     cv2.waitKey(0)
 
     # Find the path
@@ -134,4 +143,4 @@ def draw(img, x, y, n):
 
 
 if __name__ == "__main__":
-    simulation('Book1.xlsx')
+    simulation('E:\APF\junbot_adaptive_planner\simulation\python\Book1.xlsx')
