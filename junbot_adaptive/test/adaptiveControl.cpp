@@ -24,7 +24,7 @@
 #include "geometry_msgs/Twist.h"
 #include "concavehull.hpp"
 
-
+using namespace std;
 double calculateDistance (double Xa, double Ya, double Xb, double Yb);
 // TODO: Subscribe map infor
 
@@ -32,7 +32,6 @@ struct Point
 {
     double x;
     double y;
-    double z;
 };
 
 struct field_value
@@ -53,43 +52,64 @@ custom_msgs::Obstacles object;
 std::mutex m;
 double vel_robot[2];
 std::vector<field_value> res;
-field_value p0;
+
+// A global point needed for sorting points with reference
+// to the first point Used in compare function of qsort()
+Point p0;
+
+// A utility function to find next to top in a stack
+Point nextToTop(std::stack<Point> &S)
+{
+	Point p = S.top();
+	S.pop();
+	Point res = S.top();
+	S.push(p);
+	return res;
+}
+
+// A utility function to swap two points
+void swap(Point &p1, Point &p2)
+{
+	Point temp = p1;
+	p1 = p2;
+	p2 = temp;
+}
 
 // A utility function to return square of distance
 // between p1 and p2
-int distSq(field_value p1, field_value p2)
+int distSq(Point p1, Point p2)
 {
-    return (p1.x - p2.x)*(p1.x - p2.x) +
-          (p1.y - p2.y)*(p1.y - p2.y);
+	return (p1.x - p2.x)*(p1.x - p2.x) +
+		(p1.y - p2.y)*(p1.y - p2.y);
 }
- 
+
 // To find orientation of ordered triplet (p, q, r).
 // The function returns following values
 // 0 --> p, q and r are collinear
 // 1 --> Clockwise
 // 2 --> Counterclockwise
-int orientation(field_value p, field_value q, field_value r)
+float orientation(Point p, Point q, Point r)
 {
-    int val = (q.y - p.y) * (r.x - q.x) -
-              (q.x - p.x) * (r.y - q.y);
- 
-    if (val == 0) return 0;  // collinear
-    return (val > 0)? 1: 2; // clock or counterclock wise
+	float val = (q.y - p.y) * (r.x - q.x) -
+			(q.x - p.x) * (r.y - q.y);
+
+	if (val == 0) return 0; // collinear
+	return (val > 0) ? 1: 2; // clock or counterclock wise
 }
- 
+
 // A function used by library function qsort() to sort an array of
 // points with respect to the first point
 int compare(const void *vp1, const void *vp2)
 {
-   field_value *p1 = (field_value *)vp1;
-   field_value *p2 = (field_value *)vp2;
- 
-   // Find orientation
-   int o = orientation(p0, *p1, *p2);
-   if (o == 0)
-     return (distSq(p0, *p2) >= distSq(p0, *p1))? -1 : 1;
- 
-   return (o == 2)? -1: 1;
+    Point *p1 = (Point *)vp1;
+    Point *p2 = (Point *)vp2;
+
+    // Find orientation
+    int o = orientation(p0, *p1, *p2);
+    if (o == 0)
+        return (distSq(p0, *p2) >= distSq(p0, *p1))? -1 : 1;
+
+    return (o == 2)? -1: 1;
 }
 
 void globalPlanCallback(nav_msgs::Path::ConstPtr tempPath)
@@ -183,16 +203,6 @@ void swap_point(field_value &p1, field_value &p2)
     p2 = temp;
 }
 
-// A utility function to find next to top in a stack
-field_value nextToTop(std::stack<field_value> &S)
-{
-    field_value p = S.top();
-    S.pop();
-    field_value res1 = S.top();
-    S.push(p);
-    return res1;
-}
-
 /* Calculate value for field of a center point*/
 void calculate_field(Point center_point){
     double sx = 1.5;
@@ -263,92 +273,92 @@ void calculate_field(Point center_point){
                         point_value.x = object_pose_global.pose.position.x;
                         point_value.y = object_pose_global.pose.position.y;
                         count++;
+
                         res.push_back(point_value);
                     }
                 }
             }
         }
     }
-    ROS_INFO("count: %d", count);
 }
 
 // Prints convex hull of a set of n points.
-std::vector<field_value> convexHull(field_value points[], int n)
+std::vector<Point> convexHull(Point points[], int n)
 {
     // Find the bottommost point
-   int ymin = points[0].y, min = 0;
-   for (int i = 1; i < n; i++)
-   {
-     int y = points[i].y;
- 
-     // Pick the bottom-most or choose the left
-     // most point in case of tie
-     if ((y < ymin) || (ymin == y &&
-         points[i].x < points[min].x))
-        ymin = points[i].y, min = i;
-   }
- 
-   // Place the bottom-most point at first position
-   swap_point(points[0], points[min]);
- 
-   // Sort n-1 points with respect to the first point.
-   // A point p1 comes before p2 in sorted output if p2
-   // has larger polar angle (in counterclockwise
-   // direction) than p1
-   p0 = points[0];
-   ROS_INFO("p0: %f %f", p0.x, p0.y);
-   qsort(&points[1], n-1, sizeof(field_value), compare);
-    ROS_INFO("p01: %f %f", p0.x, p0.y);
-   // If two or more points make same angle with p0,
-   // Remove all but the one that is farthest from p0
-   // Remember that, in above sorting, our criteria was
-   // to keep the farthest point at the end when more than
-   // one points have same angle.
-   int m = 1; // Initialize size of modified array
-   for (int i=1; i<n; i++)
-   {
-       // Keep removing i while angle of i and i+1 is same
-       // with respect to p0
-       while (i < n-1 && orientation(p0, points[i],
-                                    points[i+1]) == 0)
-          i++;
- 
- 
-       points[m] = points[i];
-       m++;  // Update size of modified array
-   }
- 
-   // If modified array of points has less than 3 points,
-   // convex hull is not possible
-   if (m < 3) return std::vector<field_value>();
- 
-   // Create an empty stack and push first three points
-   // to it.
-   std::stack<field_value> S;
-   S.push(points[0]);
-   S.push(points[1]);
-   S.push(points[2]);
- 
-   // Process remaining n-3 points
-   for (int i = 3; i < m; i++)
-   {
-      // Keep removing top while the angle formed by
-      // points next-to-top, top, and points[i] makes
-      // a non-left turn
-      while (S.size()>1 && orientation(nextToTop(S), S.top(), points[i]) != 2)
-         S.pop();
-      S.push(points[i]);
-   }
-    std::vector<field_value> hull;
+    std::vector<Point> bound;
+    int ymin = points[0].y, min = 0;
+    for (int i = 1; i < n; i++)
+    {
+        int y = points[i].y;
+
+        // Pick the bottom-most or choose the left
+        // most point in case of tie
+        if ((y < ymin) || (ymin == y &&
+            points[i].x < points[min].x))
+            ymin = points[i].y, min = i;
+    }
+
+    // Place the bottom-most point at first position
+    swap(points[0], points[min]);
+
+    // Sort n-1 points with respect to the first point.
+    // A point p1 comes before p2 in sorted output if p2
+    // has larger polar angle (in counterclockwise
+    // direction) than p1
+    p0 = points[0];
+    qsort(&points[1], n-1, sizeof(Point), compare);
+
+    // If two or more points make same angle with p0,
+    // Remove all but the one that is farthest from p0
+    // Remember that, in above sorting, our criteria was
+    // to keep the farthest point at the end when more than
+    // one points have same angle.
+    int m = 1; // Initialize size of modified array
+    for (int i=1; i<n; i++)
+    {
+        // Keep removing i while angle of i and i+1 is same
+        // with respect to p0
+        while (i < n-1 && orientation(p0, points[i], points[i+1]) == 0)
+            i++;
+
+
+        points[m] = points[i];
+        m++; // Update size of modified array
+    }
+
+    // If modified array of points has less than 3 points,
+    // convex hull is not possible
+    if (m < 3) return bound;
+
+    // Create an empty stack and push first three points
+    // to it.
+    stack<Point> S;
+    S.push(points[0]);
+    S.push(points[1]);
+    S.push(points[2]);
+
+    // Process remaining n-3 points
+    for (int i = 3; i < m; i++)
+    {
+        // Keep removing top while the angle formed by
+        // points next-to-top, top, and points[i] makes
+        // a non-left turn
+        while (S.size()>1 && orientation(nextToTop(S), S.top(), points[i]) != 2)
+            S.pop();
+        S.push(points[i]);
+    }
+    
+    // Now stack has the output points, print contents of stack
     while (!S.empty())
     {
-        field_value p = S.top();
-        hull.push_back(p);
+        Point p = S.top();
+        bound.push_back(p);
         S.pop();
     }
-   return hull;
-    
+    return bound;
 }
+
 
 /**
  * This tutorial demonstrates simple receipt of messages over the ROS system.
@@ -388,7 +398,7 @@ int main(int argc, char **argv) {
             coner.push_back(temp);
         }
         std::vector<Point> center_point = findPointsOnRectangleEdges(coner.at(0), coner.at(1), coner.at(2),coner.at(3));
-        ROS_INFO("center_point size: %d", center_point.size());
+        bool check = 0;
         for (int i = 0; i < center_point.size(); i++)
         {
             geometry_msgs::PoseStamped::Ptr object_pose = boost::make_shared<geometry_msgs::PoseStamped>();
@@ -423,12 +433,19 @@ int main(int argc, char **argv) {
                 center_point.at(i).y = object_pose_local.pose.position.y;
                 calculate_field(center_point.at(i));
             }
+            check = 1;
         }
-        // field_value* res_temp = res.data();
-        // int n_temp = sizeof(res_temp)/sizeof(res_temp[0]);
-        // std::vector<field_value> bound = convexHull (res_temp,n_temp);
-        std::vector<field_value> bound = res;
-        // ROS_INFO("bound size: %d", bound.size());
+        Point points[res.size()];
+        for (int i = 0; i < res.size(); i++)
+        {
+            points[i].x = res.at(i).x;
+            points[i].y = res.at(i).y;
+            ROS_INFO("\{%f, %f\},", points[i].x, points[i].y);
+        }
+        int n_temp = res.size();
+        // ROS_INFO("n_temp: %d", n_temp);
+        std::vector<Point> bound = convexHull(points, n_temp);
+        // ROS_INFO("bound: %d", bound.size());
         custom_msgs::Form objectNew_temp;
         custom_msgs::Obstacles objectNew;
         for (int i = 0; i < 1; ++i) {// number object
