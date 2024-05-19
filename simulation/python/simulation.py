@@ -29,8 +29,10 @@ def simulation(filename):
     book = open_workbook(filename)
     sheet1 = book.sheet_by_index(0)
     sheet2 = book.sheet_by_index(1)
-    X = np.asarray(sheet1.col_values(0, start_rowx=0, end_rowx=None), dtype=np.int32)
+    # ROBOT
+    X = np.asarray(sheet1.col_values(0, start_rowx=0, end_rowx=None), dtype=np.int32) 
     Y = np.asarray(sheet1.col_values(1, start_rowx=0, end_rowx=None), dtype=np.int32)
+    #size of the robot
     SIGMA_X = np.asarray(sheet1.col_values(2, start_rowx=0, end_rowx=None))
     SIGMA_Y = np.asarray(sheet1.col_values(3, start_rowx=0, end_rowx=None))
     TYPE = np.asarray(sheet1.col_values(4, start_rowx=0, end_rowx=None))
