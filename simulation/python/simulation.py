@@ -51,6 +51,9 @@ def simulation(filename):
         cv2.line(img, (int(hull_temp[hull.vertices, 0][i]), int(hull_temp[hull.vertices, 1][i])), (int(hull_temp[hull.vertices, 0][i+1]), int(hull_temp[hull.vertices, 1][i+1])), (0, 255, 128), 1)
 
 
+    # Draw the map
+    
+
     # Draw grid
     img_gird_bg = np.zeros((map_sx, map_sy, 3), np.uint8)
     # Draw horizontal lines
