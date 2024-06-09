@@ -217,7 +217,9 @@ void calculate_field(Point center_point){
 // Prints convex hull of a set of n points.
 std::vector<field_value> convexHull()
 {
+    ROS_INFO("abc");
     int n = res.size();
+    std::cout << n;
     // Find the bottommost point
     int ymin = res.at(0).y;
     int min = 0;
@@ -303,10 +305,14 @@ int main(int argc, char **argv) {
     subObj = n.subscribe("/object_costmap_layer/obstacles_temp", 1000, objectCallback);
     pubObj = n.advertise<custom_msgs::Obstacles>("/object_costmap_layer/obstacles", 1000);
 
-    double coner_temp[4][3] = {{0.22,-0.6,0},
+    double coner_temp_sim[4][3] = {{0.22,-0.6,0},
                             {0.22,-1.8,0},
                             {-3.6,-1.7,0},
                             {-3.6,-0.35,0}};
+    double coner_temp[4][3] = {{1.5,-0.85,0},
+                            {1.3,-1.2,0},
+                            {1.8,-1.1,0},
+                            {2,-0.5,0}};
     // coner experiment
     ros::Rate rate(1);
     std::vector<Point> coner;
@@ -318,7 +324,7 @@ int main(int argc, char **argv) {
         coner.push_back(temp);
 
     }
-
+    ROS_INFO("check1");
     std::vector<Point> center_point = findPointsOnRectangleEdges(coner.at(0), coner.at(1), coner.at(2),coner.at(3));
     for (int i = 0; i < center_point.size(); i++)
     {
@@ -331,8 +337,9 @@ int main(int argc, char **argv) {
             res.erase(res.begin()+i);
         }
     }
+    ROS_INFO("check2");
     std::vector<field_value> bound = convexHull ();
-                 
+    ROS_INFO("check3");
     while (ros::ok())
     {
         m.lock();
@@ -346,6 +353,7 @@ int main(int argc, char **argv) {
                 objectNew.list[i].form.push_back(p);
             }
         }
+        ROS_INFO("check4");
         pubObj.publish(objectNew);
         m.unlock();
         ros::spinOnce();
