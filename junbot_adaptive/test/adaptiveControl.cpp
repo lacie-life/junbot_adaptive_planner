@@ -232,14 +232,14 @@ void calculate_field(Point center_point){
                     // ROS_INFO("norm_vel_robot: %f", norm_vel_robot);
                     double theta = acos(dot_product(vector1, vector2) / (norm(vector1) * norm(vector2)));
                     // res_temp = epsilon*norm(vector2)(1 + cos(theta)) * pow((1 - 1 / distance_center_robot), 2); 
-                    value_temp = (200 + 200 * cos(theta)) * pow((1 - 1 / distance_center_point), 2);
+                    value_temp = (400 + 400 * cos(theta)) * pow((1 - 1 / distance_center_point), 2);
                 }
                 else {
                     value_temp = 0;
                 }
                 point_value.value = value_temp;
                 // ROS_INFO("value: %f", point_value.value);
-                if (point_value.value > 0)
+                if (point_value.value > 50000)
                 {
                     geometry_msgs::PoseStamped::Ptr object_pose = boost::make_shared<geometry_msgs::PoseStamped>();
                     object_pose->pose.position.x = x;
@@ -253,7 +253,7 @@ void calculate_field(Point center_point){
                     // Wait for the transformation to be available
                     try
                     {
-                        transformStamped = tf_buffer.lookupTransform("odom", "base_footprint", ros::Time::now(),ros::Duration(0.5));
+                        transformStamped = tf_buffer.lookupTransform("map", "base_footprint", ros::Time::now(),ros::Duration(0.5));
                     }
                     catch (tf::TransformException ex){
                         ROS_ERROR("%s",ex.what());
@@ -406,14 +406,14 @@ int main(int argc, char **argv) {
             object_pose->pose.position.y = center_point.at(i).y;
             object_pose->pose.position.z = 0;
             object_pose->pose.orientation.w = 1;
-            object_pose->header.frame_id = "odom";
+            object_pose->header.frame_id = "map";
             static tf2_ros::Buffer tf_buffer;
             static tf2_ros::TransformListener tf_listener(tf_buffer);
             geometry_msgs::TransformStamped transformStamped;
             // Wait for the transformation to be available
             try
             {
-                transformStamped = tf_buffer.lookupTransform("base_footprint", "odom", ros::Time::now(),ros::Duration(0.5));
+                transformStamped = tf_buffer.lookupTransform("base_footprint", "map", ros::Time::now(),ros::Duration(0.5));
             }
             catch (tf::TransformException ex){
                 ROS_ERROR("%s",ex.what());
@@ -440,11 +440,21 @@ int main(int argc, char **argv) {
         {
             points[i].x = res.at(i).x;
             points[i].y = res.at(i).y;
-            ROS_INFO("\{%f, %f\},", points[i].x, points[i].y);
         }
         int n_temp = res.size();
-        // ROS_INFO("n_temp: %d", n_temp);
-        std::vector<Point> bound = convexHull(points, n_temp);
+        std::vector<Point> bound;
+        if (n_temp > 0)
+        {
+            bound = convexHull(points, n_temp);
+        }
+        // std::vector<Point> bound;
+        // for (int i = 0; i < res.size(); i++)
+        // {
+        //     Point temp;
+        //     temp.x = res.at(i).x;
+        //     temp.y = res.at(i).y;
+        //     bound.push_back(temp);
+        // }
         // ROS_INFO("bound: %d", bound.size());
         custom_msgs::Form objectNew_temp;
         custom_msgs::Obstacles objectNew;
