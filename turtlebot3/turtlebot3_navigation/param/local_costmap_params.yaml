@@ -1,9 +1,9 @@
 local_costmap:
-  global_frame: odom
+  global_frame: t265_odom_frame
   robot_base_frame: base_footprint
 
   update_frequency: 10.0
-  publish_frequency: 10.0
+  publish_frequency: 5.0
   transform_tolerance: 0.5  
 
   static_map: false  
@@ -19,4 +19,4 @@ local_costmap:
     - { name: inflation_layer, type: "costmap_2d::InflationLayer" }
   obstacles:
     observation_sources: scan
-    scan: {sensor_frame: base_scan, data_type: LaserScan, topic: scan, marking: true, clearing: true}
+    scan: {sensor_frame: laser, data_type: LaserScan, topic: /scan, marking: true, clearing: true}

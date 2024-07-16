@@ -1,7 +1,9 @@
 <launch>
   <!-- Arguments -->
   <arg name="model" default="waffle" doc="model type [burger, waffle, waffle_pi]"/>
+
   <arg name="map_file" default="$(find turtlebot3_navigation)/maps/405e3.yaml"/>
+
   <arg name="open_rviz" default="true"/>
   <arg name="move_forward_only" default="true"/>
 
