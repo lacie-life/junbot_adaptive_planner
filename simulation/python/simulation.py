@@ -149,4 +149,5 @@ def draw(img, x, y, n):
 
 
 if __name__ == "__main__":
-    simulation('/home/gn/Github/planner_ws/src/junbot_adaptive_planner/simulation/python/Book1.xlsx')
+    simulation('/home/gn/Github/planner_ws/src/junbot_adaptive_planner/simulation/python/Book1 copy.xlsx') # for cells
+    # simulation('/home/gn/Github/planner_ws/src/junbot_adaptive_planner/simulation/python/Book1 copy.xlsx') # for object
