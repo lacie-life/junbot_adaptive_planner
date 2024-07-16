@@ -39,7 +39,7 @@ def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
     hull_temp = []
     for i in range(Map.shape[0]):
         for j in range(Map.shape[1]):
-            if Map[i, j, 0] > 3 and Map[i, j, 0] < 10:
+            if Map[i, j, 0] > 1.3 and Map[i, j, 0] < 10:
                 hull_temp.append([j, i])
 
     hull_temp = np.array(hull_temp)
@@ -61,7 +61,7 @@ def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
     
     
     Map[:, :, 2] = Map[:, :, 0] * 0.5
-    Map[:, :, 1] = Map[:, :, 0] * 0.2
+    Map[:, :, 1] = Map[:, :, 0] * 0.5
     
     return Map, hull, hull_temp
 

@@ -207,14 +207,15 @@ void swap_point(field_value &p1, field_value &p2)
 void calculate_field(Point center_point){
     double sx = 1.5;
     double sy = 1.5;
-    double rel = 0.1; // resolution
+    double rel = 0.05; // resolution
     double distance_center_robot = sqrt((center_point.x)*(center_point.x)+(center_point.y)*(center_point.y));
     int count = 0;
-    if (distance_center_robot < 2)
+    ROS_INFO("distance_center_robot: %f", distance_center_robot);
+    if (distance_center_robot < 3)
     {
-        for (double x = -1; x < 1; x = x + rel)
+        for (double x = -1.5; x < 1.5; x = x + rel)
         {
-            for (double y = -1; y < 1; y = y + rel)
+            for (double y = -1.5; y < 1.5; y = y + rel)
             {
                 field_value point_value;
                 double value_temp = 0;
@@ -232,13 +233,15 @@ void calculate_field(Point center_point){
                     // ROS_INFO("norm_vel_robot: %f", norm_vel_robot);
                     double theta = acos(dot_product(vector1, vector2) / (norm(vector1) * norm(vector2)));
                     // res_temp = epsilon*norm(vector2)(1 + cos(theta)) * pow((1 - 1 / distance_center_robot), 2); 
-                    value_temp = (400 + 400 * cos(theta)) * pow((1 - 1 / distance_center_point), 2);
+                    value_temp = (400 + 400 * cos(theta)) * pow((1 - 1 / distance_center_point), 2); // value of field with APF
+                    // value_temp = 400*pow((1 - 1 / distance_center_point), 2);
                 }
                 else {
                     value_temp = 0;
                 }
                 point_value.value = value_temp;
-                // ROS_INFO("value: %f", point_value.value);
+                ROS_INFO("value: %f", point_value.value);
+                
                 if (point_value.value > 50000)
                 {
                     geometry_msgs::PoseStamped::Ptr object_pose = boost::make_shared<geometry_msgs::PoseStamped>();
@@ -265,6 +268,7 @@ void calculate_field(Point center_point){
                     
                     if (isnan(object_pose_global.pose.position.x) || isnan(object_pose_global.pose.position.y))
                     {
+                        ROS_INFO("NAN");
                         y = y - rel;
                         continue;
                     }
@@ -272,8 +276,8 @@ void calculate_field(Point center_point){
                     {
                         point_value.x = object_pose_global.pose.position.x;
                         point_value.y = object_pose_global.pose.position.y;
+                        ROS_INFO("x: %f, y: %f", point_value.x, point_value.y);
                         count++;
-
                         res.push_back(point_value);
                     }
                 }
@@ -378,10 +382,15 @@ int main(int argc, char **argv) {
     //                         {-3.6,-1.7,0},
     //                         {-3.6,-0.35,0}};
 
-    double coner_temp[4][3] =   {{-2,3,0},
-                                 {-2,2,0},
-                                {-3.37,2,0},
-                                {-3.37,3,0}};
+    // double coner_temp[4][3] =   {{-2,3,0},
+    //                              {-2,2,0},
+    //                             {-3.37,2,0},
+    //                             {-3.37,3,0}};
+    double coner_temp[4][3] =   {{-4.7685825756395822,-4.41601703248876315,0},
+                                 {4.7685825756395822,-4.41601703248876315,0},
+                                 {4.7685825756395822,4.41601703248876315,0},
+                                 {-4.7685825756395822,4.41601703248876315,0}};
+                                
     // coner experiment
     ros::Rate rate(1);
     
@@ -443,19 +452,22 @@ int main(int argc, char **argv) {
         }
         int n_temp = res.size();
         std::vector<Point> bound;
-        if (n_temp > 0)
-        {
-            bound = convexHull(points, n_temp);
-        }
-        // std::vector<Point> bound;
-        // for (int i = 0; i < res.size(); i++)
+
+        // if (n_temp > 0)
         // {
-        //     Point temp;
-        //     temp.x = res.at(i).x;
-        //     temp.y = res.at(i).y;
-        //     bound.push_back(temp);
+        //     bound = convexHull(points, n_temp);
         // }
-        // ROS_INFO("bound: %d", bound.size());
+        // std::vector<Point> bound;
+        ROS_INFO("res: %d", res.size());
+        for (int i = 0; i < res.size(); i++)
+        {
+            Point temp;
+            temp.x = res.at(i).x;
+            temp.y = res.at(i).y;
+            bound.push_back(temp);
+        }
+        ROS_INFO("bound: %d", bound.size());
+
         custom_msgs::Form objectNew_temp;
         custom_msgs::Obstacles objectNew;
         for (int i = 0; i < 1; ++i) {// number object
