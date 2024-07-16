@@ -20,20 +20,22 @@ def rep_field(px, py, sx, sy, mx, my):
     res = np.zeros((mx, my))
     tempX = 50
     tempY = 250
-    V_robot = np.array([0, -400])
+    V_robot = np.array([0, -1000])
     for x in range(mx):
         for y in range(my):
             thr = 5
             d = ((x - px) ** 2) / sx ** 2 + ((y - py) ** 2) / sy ** 2
             d = math.sqrt(d)
             # Drawing the repulsive field
-            if (d < 1.1 and d != 0):
+            if (d < 1 and d != 0):
                 vector1 = np.array([x-px, y-py])
                 vector2 = np.array([tempX-300, tempY-250])
                 vector2 = vector2 + V_robot
                 # Tính góc giữa hai vector (trong đơn vị radian)
                 theta = np.arccos(np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2)))
-                res[x, y] = (10+5*(math.cos(theta)))*(1 - 1 / d) ** 2
+                # res[x, y] = 0.35*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2
+                # res[x, y] = 250*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2
+                res[x, y] = 800*(1 - 1 / d) ** 2
                 # if res[x, y] > 1:
                 #     res[x, y] = 1
                 res[x, y] = res[x, y] * 0.001

@@ -46,9 +46,11 @@ def simulation(filename):
     
     img = np.zeros((map_sx, map_sy, 3), np.uint8)
     img = Map.copy()
-    print(hull_temp[hull.vertices, 0])
-    for i in range(hull_temp[hull.vertices, 0].shape[0]-1):
-        cv2.line(img, (int(hull_temp[hull.vertices, 0][i]), int(hull_temp[hull.vertices, 1][i])), (int(hull_temp[hull.vertices, 0][i+1]), int(hull_temp[hull.vertices, 1][i+1])), (0, 255, 128), 1)
+    for i in range(len(X)):
+        cv2.circle(img,(Y[i], X[i]), 2, (0, 255, 128), 1)
+    # print(hull_temp[hull.vertices, 0])
+    # for i in range(hull_temp[hull.vertices, 0].shape[0]-1):
+    #     cv2.line(img, (int(hull_temp[hull.vertices, 0][i]), int(hull_temp[hull.vertices, 1][i])), (int(hull_temp[hull.vertices, 0][i+1]), int(hull_temp[hull.vertices, 1][i+1])), (0,255,0), 1)
 
 
     # Draw grid
@@ -60,23 +62,25 @@ def simulation(filename):
     # # Draw vertical lines
     # for i in range(0, img.shape[1], grid_sz):
     #     cv2.line(img, (i, 0), (i, img.shape[0]), (0, 255, 128), 1)
-    cv2.line(img, (125, 275), (375, 275), (0, 255, 128), 1)
-    cv2.line(img, (125, 425), (375, 425), (0, 255, 128), 1)
-    for i in range(125, 351, 50):
-        cv2.line(img, (i, 275), (i, 425), (0, 255, 128), 1)
-    cv2.line(img, (125, 425), (125, 275), (0, 255, 128), 1)
-    cv2.line(img, (375, 275), (375, 425), (0, 255, 128), 1)
-    for i in range(275, 426, 50):
-        cv2.line(img, (125, i), (375, i), (0, 255, 128), 1)
+    cv2.line(img, (125, 275), (325, 275), (0, 255, 128), 1)
+    cv2.line(img, (125, 375), (325, 375), (0, 255, 128), 1)
+    for i in range(125, 301, 25):
+        cv2.line(img, (i, 275), (i, 375), (0, 255, 128), 1)
+    cv2.line(img, (125, 375), (125, 275), (0, 255, 128), 1)
+    cv2.line(img, (325, 275), (325, 375), (0, 255, 128), 1)
+    for i in range(275, 376, 25):
+        cv2.line(img, (125, i), (325, i), (0, 255, 128), 1)
     # Combine the map and grid
     # img = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.1, 0)
     # img = cv2.cvtColor(img.astype('uint8'), cv2.COLOR_BGR2GRAY)
     # heatmap = cv2.applyColorMap(img, cv2.COLORMAP_JET)
     # heatmap = cv2.addWeighted(img, 1, img_gird_bg.astype(img.dtype), 0.5, 0.1)
-    cv2.circle(img,(50, 250), 2, (0, 255, 128), 1)
+    cv2.rectangle(img,(35, 240), (55, 260), (255,0,0), -1)
+    cv2.circle(img,(450,425), 6, (0,0,255), -1)
     cv2.circle(img,(150, 300), 2, (0, 255, 128), 1)
-
+    # cv2.imwrite("APF_sim_python.png",img.astype('uint8'))
     cv2.imshow('path', img)
+
     # cv2.setMouseCallback('path', save_pixel)
     cv2.waitKey(0)
 
@@ -145,4 +149,4 @@ def draw(img, x, y, n):
 
 
 if __name__ == "__main__":
-    simulation('E:\APF\junbot_adaptive_planner\simulation\python\Book1.xlsx')
+    simulation('/home/gn/Github/planner_ws/src/junbot_adaptive_planner/simulation/python/Book1.xlsx')
