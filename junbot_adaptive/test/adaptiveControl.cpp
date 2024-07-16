@@ -256,7 +256,7 @@ void calculate_field(Point center_point){
                     // Wait for the transformation to be available
                     try
                     {
-                        transformStamped = tf_buffer.lookupTransform("odom", "base_footprint", ros::Time::now(),ros::Duration(0.5));
+                        transformStamped = tf_buffer.lookupTransform("map", "base_footprint", ros::Time::now(),ros::Duration(0.5));
                     }
                     catch (tf::TransformException ex){
                         ROS_ERROR("%s",ex.what());
@@ -415,14 +415,14 @@ int main(int argc, char **argv) {
             object_pose->pose.position.y = center_point.at(i).y;
             object_pose->pose.position.z = 0;
             object_pose->pose.orientation.w = 1;
-            object_pose->header.frame_id = "odom";
+            object_pose->header.frame_id = "map";
             static tf2_ros::Buffer tf_buffer;
             static tf2_ros::TransformListener tf_listener(tf_buffer);
             geometry_msgs::TransformStamped transformStamped;
             // Wait for the transformation to be available
             try
             {
-                transformStamped = tf_buffer.lookupTransform("base_footprint", "odom", ros::Time::now(),ros::Duration(0.5));
+                transformStamped = tf_buffer.lookupTransform("base_footprint", "map", ros::Time::now(),ros::Duration(0.5));
             }
             catch (tf::TransformException ex){
                 ROS_ERROR("%s",ex.what());
@@ -452,6 +452,7 @@ int main(int argc, char **argv) {
         }
         int n_temp = res.size();
         std::vector<Point> bound;
+
         // if (n_temp > 0)
         // {
         //     bound = convexHull(points, n_temp);
@@ -466,6 +467,7 @@ int main(int argc, char **argv) {
             bound.push_back(temp);
         }
         ROS_INFO("bound: %d", bound.size());
+
         custom_msgs::Form objectNew_temp;
         custom_msgs::Obstacles objectNew;
         for (int i = 0; i < 1; ++i) {// number object

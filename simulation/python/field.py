@@ -29,7 +29,7 @@ def rep_field(px, py, sx, sy, mx, my):
             # Drawing the repulsive field
             if (d < 1 and d != 0):
                 vector1 = np.array([x-px, y-py])
-                vector2 = np.array([tempX-300, tempY-250])
+                vector2 = np.array([tempX - 300, tempY - 250])
                 vector2 = vector2 + V_robot
                 # Tính góc giữa hai vector (trong đơn vị radian)
                 theta = np.arccos(np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2)))
