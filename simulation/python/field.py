@@ -13,6 +13,7 @@ def att_field(px, py, mx, my):
                 res[x, y] = 0.5 * (d ** 2)
             res[x, y] = 0.0001 * res[x, y]
             # print(res[x, y])
+            res[x, y] = 0.5 * res[x, y]
     return res
 
 
@@ -34,8 +35,8 @@ def rep_field(px, py, sx, sy, mx, my):
                 # Tính góc giữa hai vector (trong đơn vị radian)
                 theta = np.arccos(np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2)))
                 # res[x, y] = 0.35*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2
-                # res[x, y] = 250*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2
-                res[x, y] = 800*(1 - 1 / d) ** 2
+                res[x, y] = 250*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2 # SAPF
+                # res[x, y] = 800*(1 - 1 / d) ** 2 # APF
                 # if res[x, y] > 1:
                 #     res[x, y] = 1
                 res[x, y] = res[x, y] * 0.001
