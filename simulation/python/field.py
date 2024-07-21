@@ -13,14 +13,15 @@ def att_field(px, py, mx, my):
                 res[x, y] = 0.5 * (d ** 2)
             res[x, y] = 0.0001 * res[x, y]
             # print(res[x, y])
+            res[x, y] = res[x, y] * 0.8
     return res
 
 
 def rep_field(px, py, sx, sy, mx, my):
     res = np.zeros((mx, my))
-    tempX = 50
-    tempY = 250
-    V_robot = np.array([0, -1000])
+    tempX = 40
+    tempY = 40
+    V_robot = np.array([40, 40])
     for x in range(mx):
         for y in range(my):
             thr = 5
@@ -29,13 +30,14 @@ def rep_field(px, py, sx, sy, mx, my):
             # Drawing the repulsive field
             if (d < 1 and d != 0):
                 vector1 = np.array([x-px, y-py])
-                vector2 = np.array([tempX - 300, tempY - 250])
-                vector2 = vector2 + V_robot
+                # vector2 = np.array([tempX - 240, tempY - 240])
+                # vector2 = vector2 + V_robot
+                vector2 = np.array([0, -40])
                 # Tính góc giữa hai vector (trong đơn vị radian)
                 theta = np.arccos(np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2)))
-                # res[x, y] = 0.35*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2 # SAPF for cells
+                # res[x, y] = 0.1*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2 # SAPF for cells
                 # res[x, y] = (1 - 1 / d) ** 2 #  APF for cells
-                res[x, y] = 250*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2 # SAPF for object
+                res[x, y] =0.5*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2 # SAPF for object
                 # res[x, y] = 800*(1 - 1 / d) ** 2 #  APF for object
                 # if res[x, y] > 1:
                 #     res[x, y] = 1

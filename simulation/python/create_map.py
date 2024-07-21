@@ -33,8 +33,8 @@ def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
                 if Map[temp1Y, temp1X, 0] > 1:
                     inter.append(intersection)
                     break
-        elif (TYPE[i] == 2):
-            Map[:, :, 0] += att_field(X[i], Y[i], mx, my)
+        # elif (TYPE[i] == 2):
+            # Map[:, :, 0] += att_field(X[i], Y[i], mx, my)
     # Color encode the map for visualization
     hull_temp = []
     for i in range(Map.shape[0]):
@@ -60,6 +60,8 @@ def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
     # plt.show()
     
     
+    # Map[:, :, 2] = Map[:, :, 0] * 0.5
+    # Map[:, :, 1] = Map[:, :, 0] * 0.5
     Map[:, :, 2] = Map[:, :, 0] * 0.5
     Map[:, :, 1] = Map[:, :, 0] * 0.5
     
