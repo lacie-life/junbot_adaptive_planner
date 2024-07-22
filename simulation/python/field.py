@@ -35,10 +35,10 @@ def rep_field(px, py, sx, sy, mx, my):
                 vector2 = np.array([0, -40])
                 # Tính góc giữa hai vector (trong đơn vị radian)
                 theta = np.arccos(np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2)))
-                # res[x, y] = 0.1*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2 # SAPF for cells
+                # res[x, y] = 0.07*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2 # SAPF for cells
                 # res[x, y] = (1 - 1 / d) ** 2 #  APF for cells
-                res[x, y] =0.5*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2 # SAPF for object
-                # res[x, y] = 800*(1 - 1 / d) ** 2 #  APF for object
+                # res[x, y] =0.5*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2 # SAPF for object
+                res[x, y] = (1 - 1 / d) ** 2 #  APF for object
                 # if res[x, y] > 1:
                 #     res[x, y] = 1
                 res[x, y] = res[x, y] * 0.001

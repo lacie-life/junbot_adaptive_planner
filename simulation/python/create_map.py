@@ -43,7 +43,9 @@ def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
                 hull_temp.append([j, i])
 
     hull_temp = np.array(hull_temp)
-    hull = ConvexHull(hull_temp)
+    hull = []
+    if len(hull_temp) > 0:
+        hull = ConvexHull(hull_temp)
     # fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(10, 3))
 
     # for ax in (ax1, ax2):
