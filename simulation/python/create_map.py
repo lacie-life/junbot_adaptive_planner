@@ -11,10 +11,6 @@ import matplotlib.pyplot as plt
 def create_map(mx, my, X, Y, SIGMA_X, SIGMA_Y, TYPE):
     n = len(X)
     Map = np.zeros((mx, my, 3))
-    Map_R = np.zeros((mx, my))
-    Map_R = Map_R + 10
-    Map_B = np.zeros((mx, my))
-    Map_B = Map_B + 100
 
     # Create the map with repulsive and attractive fields in channel 1
     

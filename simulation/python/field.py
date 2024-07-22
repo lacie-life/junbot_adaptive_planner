@@ -39,6 +39,7 @@ def rep_field(px, py, sx, sy, mx, my):
                 # res[x, y] = (1 - 1 / d) ** 2 #  APF for cells
                 # res[x, y] =0.5*(2+(2*math.cos(theta)))*(1 - 1 / d) ** 2 # SAPF for object
                 res[x, y] = (1 - 1 / d) ** 2 #  APF for object
+
                 # if res[x, y] > 1:
                 #     res[x, y] = 1
                 res[x, y] = res[x, y] * 0.001
