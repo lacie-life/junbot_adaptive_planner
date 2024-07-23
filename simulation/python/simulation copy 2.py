@@ -46,8 +46,8 @@ def simulation(filename):
     
     img = np.zeros((map_sx, map_sy, 3), np.uint8)
     img = Map.copy()
-    # for i in range(len(X)):
-    #     cv2.circle(img,(Y[i], X[i]), 2, (0, 255, 128), 1)
+    for i in range(3,len(X)):
+        cv2.circle(img,(Y[i], X[i]), 2, (0, 255, 128), 1)
     # print(hull_temp[hull.vertices, 0])
     # for i in range(hull_temp[hull.vertices, 0].shape[0]-1):
     #     cv2.line(img, (int(hull_temp[hull.vertices, 0][i]), int(hull_temp[hull.vertices, 1][i])), (int(hull_temp[hull.vertices, 0][i+1]), int(hull_temp[hull.vertices, 1][i+1])), (0,255,0), 1)
@@ -117,10 +117,28 @@ def simulation(filename):
     # cv2.line(img, (205,225), (275,225), (0, 0, 255), 3)
 
     #obstacle person
-    cv2.line(img, (210,230), (210,250), (0, 0, 255), 2)
-    cv2.line(img, (230,250), (210,250), (0, 0, 255), 2)
-    cv2.line(img, (230,250), (230,230), (0, 0, 255), 2)
-    cv2.line(img, (210,230), (230,230), (0, 0, 255), 2)
+    cv2.line(img, (175,230), (175,250), (0, 0, 255), 2)
+    cv2.line(img, (195,250), (175,250), (0, 0, 255), 2)
+    cv2.line(img, (195,250), (195,230), (0, 0, 255), 2)
+    cv2.line(img, (175,230), (195,230), (0, 0, 255), 2)
+    # cv2.line(img, (210,230), (210,250), (0, 0, 255), 2)
+    # cv2.line(img, (230,250), (210,250), (0, 0, 255), 2)
+    # cv2.line(img, (230,250), (230,230), (0, 0, 255), 2)
+    # cv2.line(img, (210,230), (230,230), (0, 0, 255), 2)
+    # cv2.line(img, (295,230), (295,250), (0, 0, 255), 2)
+    # cv2.line(img, (315,250), (295,250), (0, 0, 255), 2)
+    # cv2.line(img, (315,250), (315,230), (0, 0, 255), 2)
+    # cv2.line(img, (295,230), (315,230), (0, 0, 255), 2)
+
+    cv2.line(img, (175,240), (175,250), (0, 0, 255), 1)
+    cv2.line(img, (195,250), (175,250), (0, 0, 255), 1)
+    cv2.line(img, (195,250), (195,240), (0, 0, 255), 1)
+    cv2.line(img, (175,240), (195,240), (0, 0, 255), 1)
+
+    cv2.line(img, (185,230), (185,250), (0, 0, 255), 1)
+    cv2.line(img, (195,250), (185,250), (0, 0, 255), 1)
+    cv2.line(img, (195,250), (195,230), (0, 0, 255), 1)
+    cv2.line(img, (185,230), (195,230), (0, 0, 255), 1)
 
 
     # robot
@@ -128,7 +146,11 @@ def simulation(filename):
     # cv2.line(img1, (50,60), (30,60), (0, 255, 0), 3)
     # cv2.line(img1, (50,60), (50,30), (0, 255, 0), 3)
     # cv2.line(img1, (30,30), (50,30), (0, 255, 0), 3)
-    cv2.circle(img,(205,195), 10, (0,255,0), 3)
+    # cv2.circle(img,(205,195), 10, (0,255,0), 3)
+    # cv2.circle(img,(40,40), 10, (0,255,0), 3)
+    # cv2.circle(img,(225,230), 10, (0,255,0), 3)
+    # cv2.circle(img,(245,320), 10, (0,255,0), 3)
+    cv2.circle(img,(320,390), 10, (0,255,0), 3)
     # target
     cv2.circle(img,(450,350), 4, (255, 255, 255), 3)
 
