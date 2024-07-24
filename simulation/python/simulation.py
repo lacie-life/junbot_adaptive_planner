@@ -156,5 +156,5 @@ def draw(img, x, y, n):
 
 
 if __name__ == "__main__":
-    simulation('./Book1.xlsx')
+    simulation('./data/Book1.xlsx')
 
