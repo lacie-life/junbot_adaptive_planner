@@ -49,7 +49,7 @@ def simulation(filename):
     
     img = np.zeros((map_sx, map_sy, 3), np.uint8)
     img = Map.copy()
-    for i in range(3,len(X)):
+    for i in range(6,len(X)-2):
         cv2.circle(img,(Y[i], X[i]), 2, (0, 255, 128), 1)
     # print(hull_temp[hull.vertices, 0])
     # for i in range(hull_temp[hull.vertices, 0].shape[0]-1):
@@ -120,28 +120,28 @@ def simulation(filename):
     # cv2.line(img, (205,225), (275,225), (0, 0, 255), 3)
 
     #obstacle person
-    cv2.line(img, (175,230), (175,250), (0, 0, 255), 2)
-    cv2.line(img, (195,250), (175,250), (0, 0, 255), 2)
-    cv2.line(img, (195,250), (195,230), (0, 0, 255), 2)
-    cv2.line(img, (175,230), (195,230), (0, 0, 255), 2)
-    # cv2.line(img, (210,230), (210,250), (0, 0, 255), 2)
-    # cv2.line(img, (230,250), (210,250), (0, 0, 255), 2)
-    # cv2.line(img, (230,250), (230,230), (0, 0, 255), 2)
-    # cv2.line(img, (210,230), (230,230), (0, 0, 255), 2)
+    # cv2.line(img, (175,230), (175,250), (0, 0, 255), 2)
+    # cv2.line(img, (195,250), (175,250), (0, 0, 255), 2)
+    # cv2.line(img, (195,250), (195,230), (0, 0, 255), 2)
+    # cv2.line(img, (175,230), (195,230), (0, 0, 255), 2)
+    cv2.line(img, (210,230), (210,250), (0, 0, 255), 2)
+    cv2.line(img, (230,250), (210,250), (0, 0, 255), 2)
+    cv2.line(img, (230,250), (230,230), (0, 0, 255), 2)
+    cv2.line(img, (210,230), (230,230), (0, 0, 255), 2)
     # cv2.line(img, (295,230), (295,250), (0, 0, 255), 2)
     # cv2.line(img, (315,250), (295,250), (0, 0, 255), 2)
     # cv2.line(img, (315,250), (315,230), (0, 0, 255), 2)
     # cv2.line(img, (295,230), (315,230), (0, 0, 255), 2)
 
-    cv2.line(img, (175,240), (175,250), (0, 0, 255), 1)
-    cv2.line(img, (195,250), (175,250), (0, 0, 255), 1)
-    cv2.line(img, (195,250), (195,240), (0, 0, 255), 1)
-    cv2.line(img, (175,240), (195,240), (0, 0, 255), 1)
+    cv2.line(img, (210,240), (210,250), (0, 0, 255), 1)
+    cv2.line(img, (230,250), (210,250), (0, 0, 255), 1)
+    cv2.line(img, (230,250), (230,240), (0, 0, 255), 1)
+    cv2.line(img, (210,240), (230,240), (0, 0, 255), 1)
 
-    cv2.line(img, (185,230), (185,250), (0, 0, 255), 1)
-    cv2.line(img, (195,250), (185,250), (0, 0, 255), 1)
-    cv2.line(img, (195,250), (195,230), (0, 0, 255), 1)
-    cv2.line(img, (185,230), (195,230), (0, 0, 255), 1)
+    cv2.line(img, (220,230), (220,250), (0, 0, 255), 1)
+    cv2.line(img, (230,250), (220,250), (0, 0, 255), 1)
+    cv2.line(img, (230,250), (230,230), (0, 0, 255), 1)
+    cv2.line(img, (220,230), (230,230), (0, 0, 255), 1)
 
 
     # robot
@@ -235,5 +235,5 @@ def draw(img, x, y, n):
 
 
 if __name__ == "__main__":
-    simulation('./Book1_copy_4.xlsx') # for cells
+    simulation('./Book1_copy_5.xlsx') # for cells
     # simulation('/home/gn/Github/planner_ws/src/junbot_adaptive_planner/simulation/python/Book1 copy.xlsx') # for object
