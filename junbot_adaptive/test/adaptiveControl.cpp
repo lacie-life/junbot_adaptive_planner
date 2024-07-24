@@ -23,6 +23,7 @@
 #include "geometry_msgs/PoseStamped.h"
 #include "geometry_msgs/Twist.h"
 #include "concavehull.hpp"
+#include <chrono>
 
 using namespace std;
 double calculateDistance (double Xa, double Ya, double Xb, double Yb);
@@ -139,13 +140,13 @@ void objectCallback(custom_msgs::Obstacles::ConstPtr objTemp)
     m.lock();
     object.list = objTemp->list;
     pubObj.publish(object);
-    ROS_INFO("Object Callback");
-    for(int i = 0; i < 4; i++)
-    {
-        std::cout << object.list.at(0).form.at(i).x << "\n";
-        std::cout << object.list.at(0).form.at(i).y << "\n";
-        std::cout << object.list.at(0).form.at(i).z << "\n";
-    }
+    // ROS_INFO("Object Callback");
+    // for(int i = 0; i < 4; i++)
+    // {
+    //     std::cout << object.list.at(0).form.at(i).x << "\n";
+    //     std::cout << object.list.at(0).form.at(i).y << "\n";
+    //     std::cout << object.list.at(0).form.at(i).z << "\n";
+    // }
     m.unlock();
 }
 
@@ -156,10 +157,10 @@ double distanceBetweenPoints(Point p1, Point p2) {
 std::vector<Point> findPointsOnRectangleEdges(Point A, Point B, Point C, Point D) {
     std::vector<Point> points;
 
-    double num_points_AB = distanceBetweenPoints(A, B) / 0.5;
-    double num_points_BC = distanceBetweenPoints(B, C) / 0.5;
-    double num_points_CD = distanceBetweenPoints(C, D) / 0.5;
-    double num_points_DA = distanceBetweenPoints(D, A) / 0.5;
+    double num_points_AB = distanceBetweenPoints(A, B) / 1;
+    double num_points_BC = distanceBetweenPoints(B, C) / 1;
+    double num_points_CD = distanceBetweenPoints(C, D) / 1;
+    double num_points_DA = distanceBetweenPoints(D, A) / 1;
 
     double increment_AB_x = (B.x - A.x) / num_points_AB;
     double increment_AB_y = (B.y - A.y) / num_points_AB;
@@ -207,15 +208,15 @@ void swap_point(field_value &p1, field_value &p2)
 void calculate_field(Point center_point){
     double sx = 1.5;
     double sy = 1.5;
-    double rel = 0.05; // resolution
+    double rel = 0.1; // resolution
     double distance_center_robot = sqrt((center_point.x)*(center_point.x)+(center_point.y)*(center_point.y));
     int count = 0;
-    ROS_INFO("distance_center_robot: %f", distance_center_robot);
+    // ROS_INFO("distance_center_robot: %f", distance_center_robot);
     if (distance_center_robot < 3)
     {
         for (double x = -1.5; x < 1.5; x = x + rel)
         {
-            for (double y = -1.5; y < 1.5; y = y + rel)
+            for (double y = 0; y < 1.5; y = y + rel)
             {
                 field_value point_value;
                 double value_temp = 0;
@@ -240,7 +241,7 @@ void calculate_field(Point center_point){
                     value_temp = 0;
                 }
                 point_value.value = value_temp;
-                ROS_INFO("value: %f", point_value.value);
+                // ROS_INFO("value: %f", point_value.value);
                 
                 if (point_value.value > 50000)
                 {
@@ -256,7 +257,7 @@ void calculate_field(Point center_point){
                     // Wait for the transformation to be available
                     try
                     {
-                        transformStamped = tf_buffer.lookupTransform("map", "base_footprint", ros::Time::now(),ros::Duration(0.5));
+                        transformStamped = tf_buffer.lookupTransform("odom", "base_footprint", ros::Time::now(),ros::Duration(0.5));
                     }
                     catch (tf::TransformException ex){
                         ROS_ERROR("%s",ex.what());
@@ -268,7 +269,7 @@ void calculate_field(Point center_point){
                     
                     if (isnan(object_pose_global.pose.position.x) || isnan(object_pose_global.pose.position.y))
                     {
-                        ROS_INFO("NAN");
+                        // ROS_INFO("NAN");
                         y = y - rel;
                         continue;
                     }
@@ -276,7 +277,7 @@ void calculate_field(Point center_point){
                     {
                         point_value.x = object_pose_global.pose.position.x;
                         point_value.y = object_pose_global.pose.position.y;
-                        ROS_INFO("x: %f, y: %f", point_value.x, point_value.y);
+                        // ROS_INFO("x: %f, y: %f", point_value.x, point_value.y);
                         count++;
                         res.push_back(point_value);
                     }
@@ -382,22 +383,24 @@ int main(int argc, char **argv) {
     //                         {-3.6,-1.7,0},
     //                         {-3.6,-0.35,0}};
 
-    // double coner_temp[4][3] =   {{-2,3,0},
-    //                              {-2,2,0},
-    //                             {-3.37,2,0},
-    //                             {-3.37,3,0}};
-    double coner_temp[4][3] =   {{-4.7685825756395822,-4.41601703248876315,0},
-                                 {4.7685825756395822,-4.41601703248876315,0},
-                                 {4.7685825756395822,4.41601703248876315,0},
-                                 {-4.7685825756395822,4.41601703248876315,0}};
+    double coner_temp[4][3] =   {{-2,3,0},
+                                 {-2,2,0},
+                                {-3.37,2,0},
+                                {-3.37,3,0}};
+    // double coner_temp[4][3] =   {{-4.7685825756395822,-4.41601703248876315,0},
+    //                              {4.7685825756395822,-4.41601703248876315,0},
+    //                              {4.7685825756395822,4.41601703248876315,0},
+    //                              {-4.7685825756395822,4.41601703248876315,0}};
                                 
     // coner experiment
+    
     ros::Rate rate(1);
     
     while (ros::ok())
     {
         m.lock();
         res.clear();
+        auto start = std::chrono::high_resolution_clock::now();
         std::vector<Point> coner;
         for (int i = 0; i < 4; i++)
         {
@@ -407,6 +410,8 @@ int main(int argc, char **argv) {
             coner.push_back(temp);
         }
         std::vector<Point> center_point = findPointsOnRectangleEdges(coner.at(0), coner.at(1), coner.at(2),coner.at(3));
+
+        // ROS_INFO("center_point: %d", center_point.size());
         bool check = 0;
         for (int i = 0; i < center_point.size(); i++)
         {
@@ -415,14 +420,14 @@ int main(int argc, char **argv) {
             object_pose->pose.position.y = center_point.at(i).y;
             object_pose->pose.position.z = 0;
             object_pose->pose.orientation.w = 1;
-            object_pose->header.frame_id = "map";
+            object_pose->header.frame_id = "odom";
             static tf2_ros::Buffer tf_buffer;
             static tf2_ros::TransformListener tf_listener(tf_buffer);
             geometry_msgs::TransformStamped transformStamped;
             // Wait for the transformation to be available
             try
             {
-                transformStamped = tf_buffer.lookupTransform("base_footprint", "map", ros::Time::now(),ros::Duration(0.5));
+                transformStamped = tf_buffer.lookupTransform("base_footprint", "odom", ros::Time::now(),ros::Duration(0.5));
             }
             catch (tf::TransformException ex){
                 ROS_ERROR("%s",ex.what());
@@ -444,6 +449,9 @@ int main(int argc, char **argv) {
             }
             check = 1;
         }
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = end - start;
+        // std::cout << "Elapsed time: " << elapsed.count() << " seconds\n";
         Point points[res.size()];
         for (int i = 0; i < res.size(); i++)
         {
@@ -453,12 +461,17 @@ int main(int argc, char **argv) {
         int n_temp = res.size();
         std::vector<Point> bound;
 
-        // if (n_temp > 0)
-        // {
-        //     bound = convexHull(points, n_temp);
-        // }
+        if (n_temp > 0)
+        {
+            auto start1 = std::chrono::high_resolution_clock::now();
+            ROS_INFO("n_temp: %d", n_temp);
+            bound = convexHull(points, n_temp);
+            auto end1 = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> elapsed1 = end1 - start1;
+            std::cout << "Elapsed time1: " << elapsed1.count() << " seconds\n";
+        }
         // std::vector<Point> bound;
-        ROS_INFO("res: %d", res.size());
+        // ROS_INFO("res: %d", res.size());
         for (int i = 0; i < res.size(); i++)
         {
             Point temp;
@@ -466,7 +479,7 @@ int main(int argc, char **argv) {
             temp.y = res.at(i).y;
             bound.push_back(temp);
         }
-        ROS_INFO("bound: %d", bound.size());
+        // ROS_INFO("bound: %d", bound.size());
 
         custom_msgs::Form objectNew_temp;
         custom_msgs::Obstacles objectNew;
